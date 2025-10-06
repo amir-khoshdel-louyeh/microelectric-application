@@ -1,0 +1,57 @@
+//Field external
+0			       !FLAG_FIELD 0 (No Field), 1(const), 2(z_variable), 3 (non_uniform) (int)
+2                              !FLAG_INPUT_TYPE 1(Spherical), 2(cartesian)
+0.0	                       !field ext (V/m)  
+0.e0 			       !H_theta
+0.0e0			       !H_phi
+0.0                            !H_x
+0.0                            !H_y
+1.7e8                          !H_z
+field_z_variable.dat           !nome file
+field_non_uniform.dat          !nome file
+1			       ! FLAG_FIELD_AC 0 (No AC Field), 1(const), 2(z_variable), 3(non_uniform)
+0.0e0			       ! hx (V/m)
+0.0e0			       ! hy (V/m)
+-6.4e8			       ! hz (V/m)
+AC_z_variable.dat              !nome file
+AC_non_uniform.dat             !nome file
+1                              !FLAG_FREQUENCY 1(const), 2(z_variable), 3(non_uniform)
+8.0e-5			       !frequency
+frequency_z_variable.dat       !nome file
+frequency_non_uniform.dat      !nome file
+1                              !FLAG_PHASE 1(const), 2(z_variable), 3(non_uniform)
+0.0e0			       ! fi_x 
+0.0e0			       ! fi_y
+0.0e0			       ! fi_z
+phase_z_variable.dat           !nome file
+phase_non_uniform.dat          !nome file
+0			       !FLAG_FIELD_PULSE 0(no), 1(si)
+7			       !nfield (int)
+file_pulse.dat 	               !nome file di due colonne
+0.0e0 			       !H_theta_pulse
+0.0e0			       !H_phi_pulse
+
+
+
+
+
+
+
+
+----COMMENT----
+FLAG_FIELD 
+0 --> field extern not computed;
+1 --> field external is constant input value directly (mT); 	
+2 --> field extern is variable along z direction input from file;
+3 --> field extern is entirely non uniform input from file;
+
+
+
+----ENDCOMMENT----
+
+
+----NOTE----
+
+
+
+----ENDNOTE----
