@@ -1,0 +1,56 @@
+//Gradient field parameters
+1                               !FLAG_GRADIENT  0, 1 (int)
+1.73e-10			!(m4NC-2) G0_constant
+2				!FLAG_G1  1, 2, 3 (int)
+1.038e-10			!(m4NC-2) G1_constant 
+G1_z_variable.dat               !nome del file 
+G1_Non_Uniform.dat 		!nome del file 
+1				!FLAG_G2  1, 2, 3 (int)
+0.0				!(m4NC-2) G2_constant 
+G2_z_variable.dat               !nome del file 
+alpha1_Non_Uniform.dat 		!nome del file 
+2				!FLAG_G3  1, 2, 3 (int)
+5.19e-11			!(m4NC-2) G3_constant 
+G3_z_variable.dat               !nome del file 
+G3_Non_Uniform.dat 		!nome del file 
+2				!FLAG_G4  1, 2, 3 (int)
+5.19e-11				!(m4NC-2) G4_constant 
+G4_z_variable.dat               !nome del file 
+G4_Non_Uniform.dat 		!nome del file 
+2				!FLAG_BC	0, 1, 2 (int) 
+
+----COMMENT----
+FLAG_G0
+1 -->	 G0 has a single constant value;
+2 -->    G0 change values along z_layer, input from file;
+3 -->    G0 has entirely non_uniform values, input from file;
+FLAG_G1
+1 -->	 G1 has a single constant value;
+2 -->    G1 change values along z_layer, input from file;
+3 -->    G1 has entirely non_uniform values, input from file;
+FLAG_G2  
+1 -->	 G2 has a single constant value;
+2 -->    G2 change values along z_layer, input from file;
+3 -->    G2 has entirely non_uniform values, input from file;
+FLAG_G3  
+1 -->	 G3 has a single constant value;
+2 -->    G3 change values along z_layer, input from file;
+3 -->    G3 has entirely non_uniform values, input from file;
+FLAG_G4  
+1 -->	 G4 has a single constant value;
+2 -->    G4 change values along z_layer, input from file;
+3 -->    G4 has entirely non_uniform values, input from file;
+FLAG_BC  
+0 -->	 simple boundary conditions (Neumann type boundary conditions with 0 flux);
+1 -->    open boundary conditions (Drichlet type boundary conditions with 0 value on boundary);
+2 -->    periodic boundary conditions;
+
+
+	
+
+
+
+
+----ENDCOMMENT----
+
+
