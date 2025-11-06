@@ -1,0 +1,24 @@
+//Pinicial
+3	                     !FLAG_PINICIAL 1, 2, 3
+0.0	                     !pol_x (Cm-2) uniform
+0.0	                     !pol_y (Cm-2) uniform
+0.0	                     !pol_z (Cm-2) uniform
+pinicial_z_variable.dat      !nome del file 
+pinicial_Non_Uniform.dat     !nome del file 
+
+
+----COMMENT----
+FLAG_PINICIAL 
+1 --> initial polarization is uniform;
+2 --> initial polarization is non_uniform along Z-axis taken from file;
+3 --> initial polarization is entirely non_uniform taken from file;
+
+
+
+----ENDCOMMENT----
+
+
+----NOTE----
+
+
+----ENDNOTE----
