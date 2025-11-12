@@ -1,0 +1,1793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Main Configuration Page</title>
+    <link rel="stylesheet" href="style.css"> </head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='style_icon.ico') }}" type="image/x-icon">
+
+    
+    <head>
+        <meta charset="UTF-8">
+        <title>Main Page</title>
+</head>
+
+
+<body>
+    <h1>Main Configuration Page</h1>
+
+    <div class="tab-container">
+        <ul class="tab-list">
+            <li><a href="#Run_Page" class="tab-link active">Run Page</a></li>
+            <li><a href="#Geometry_Settings" class="tab-link">Geometry Settings</a></li>
+            <li><a href="#Ferro_Geometry" class="tab-link">Ferro Geometry</a></li>
+            <li><a href="#Initial_Polarization" class="tab-link">Initial Polarization</a></li>
+            <li><a href="#Landau_Free_Field_Parameters" class="tab-link">Landau Free Field Parameters</a></li>
+            <li><a href="#Gradient_Field_Parameters" class="tab-link">Gradient Field Parameters</a></li>
+            <li><a href="#External_Field" class="tab-link">External Field (External Excitation Parameters)</a></li>
+            <li><a href="#Strain_Field" class="tab-link">Strain Field (External Excitation Parameters) (Later)</a></li>
+            <li><a href="#Electrostatic_Field_Parameters" class="tab-link">Electrostatic Field Parameters</a></li>
+            <li><a href="#Elastic_Field_Parameters" class="tab-link">Elastic Field Parameters (Later)</a></li>
+            <li><a href="#Output_Settings" class="tab-link">Output Settings (Later)</a></li>
+        </ul>
+
+        <div class="tab-content-wrapper">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <div id="Run_Page" class="tab-content active">
+                <h3>Run Page</h3>
+                <form action="/Run_Page" method="post" enctype="multipart/form-data">
+                    
+                    <fieldset>
+                        <h3>Information Box</h3>
+                        {% if message %}
+                        <div class="message-box {% if 'Error' in message %}message-error{% else %}message-success{% endif %}">
+                            {{ message }}
+                        </div>
+                        {% endif %}
+                    </fieldset>
+                    <br><br>
+                    <fieldset>
+                        <h1>Run Page</h1>
+                        <button type="submit">Run The Project With Submited Configuration</button>
+                    </fieldset>
+                    
+                </form>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+            <div id="Geometry_Settings" class="tab-content">
+                <h3>Geometry Settings</h3>
+                <form action="/Geometry_Settings" method="post" enctype="multipart/form-data">
+                    <label for="label">don't have any information yet</label>
+                    
+                    <button type="submit">Submit Configuration</button>
+                </form>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <div id="Ferro_Geometry" class="tab-content">
+
+                <div id="ferro-data2" data-geometry='{{ List_Ferro_Geometry | tojson | safe }}'></div>
+
+                <h3>Ferro Geometry</h3>
+                <form action="/Ferro_Geometry" method="post" enctype="multipart/form-data">
+
+                    <input type="hidden" name="project_path" value="{{ project_path }}">
+
+                    <fieldset>
+                        <legend>Spatial Dimensions</legend>
+                        <div class="form-group">
+                            <label for="Ncx">Number of Cells in X-direction (Ncx):</label>
+                            <input type="number" id="Ncx" name="Ncx" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="Ncy">Number of Cells in Y-direction (Ncy):</label>
+                            <input type="number" id="Ncy" name="Ncy"  required>
+                        </div>
+                        <div class="form-group">
+                            <label for="Ncz">Number of Cells in Z-direction (Ncz):</label>
+                            <input type="number" id="Ncz" name="Ncz"  required>
+                        </div>
+                    </fieldset>
+            
+                    <fieldset>
+                        <legend>Shape Definition</legend>
+                        <div class="form-group">
+                            <label for="FLAG_SHAPE">Shape Definition:</label>
+                            <select id="FLAG_SHAPE" name="FLAG_SHAPE">
+                                <option value="1">Rectangular or Square (automatically generated)</option>
+                                <option value="2">Read from File</option>
+                                <option value="3">Elliptical or Circular (automatically generated)</option>
+                            </select>
+                        </div>
+            
+                        <div id="shape_file_upload" style="display: none; margin-top: 10px;" class="form-group">
+                            <label for="shape_file_input">Shape File (.dat):</label>
+                            <input type="file" id="shape_file_input" name="shape_file_input">
+                        </div>
+            
+
+            
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                const shapeSelect = document.getElementById('FLAG_SHAPE');
+                                const shapeFileUploadDiv = document.getElementById('shape_file_upload');
+                                const shapeFilenameContainer = document.getElementById('shape_filename_container');
+            
+                                function updateShapeFileVisibility() {
+                                    if (shapeSelect.value === '2' || shapeSelect.value === '3') {
+                                        shapeFileUploadDiv.style.display = 'block';
+                                        shapeFilenameContainer.style.display = 'block';
+                                    } else {
+                                        shapeFileUploadDiv.style.display = 'none';
+                                        shapeFilenameContainer.style.display = 'none';
+                                    }
+                                }
+            
+                                shapeSelect.addEventListener('change', updateShapeFileVisibility);
+            
+                                // Initialize visibility on page load
+                                updateShapeFileVisibility();
+                            });
+                        </script>
+
+                    </fieldset>
+            
+                    <fieldset>
+                        <legend>Cell and Domain Size</legend>
+                        <div class="form-group">
+                            <label for="delta_x">Cell Size in X-direction (delta_x in meters):</label>
+                            <input type="number" id="delta_x" name="delta_x" step="any">
+                            <span class="unit">m</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="delta_y">Cell Size in Y-direction (delta_y in meters):</label>
+                            <input type="number" id="delta_y" name="delta_y" step="any">
+                            <span class="unit">m</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="delta_z">Cell Size in Z-direction (delta_z in meters):</label>
+                            <input type="number" id="delta_z" name="delta_z" step="any">
+                            <span class="unit">m</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="h_param">Parameter h (in units of delta):</label>
+                            <input type="number" id="h_param" name="h_param" step="any">
+                        </div>
+                    </fieldset>
+            
+                    <fieldset>
+                        <legend>Simulation Time</legend>
+                        <div class="form-group">
+                            <label for="duration_time">Simulation Duration:</label>
+                            <input type="number" id="duration_time" name="duration_time" step="any">
+                            <span>(s)</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="step_size">Initial Time Step Size:</label>
+                            <input type="number" id="step_size" name="step_size" step="any">
+                            <span>(s)</span>
+                        </div>
+                    </fieldset>
+            
+                    <fieldset>
+                        <legend>Integration Method</legend>
+                        <div class="form-group">
+                            <label for="FLAG_INTEGRATOR">Integration Method:</label>
+                            <select id="FLAG_INTEGRATOR" name="FLAG_INTEGRATOR">
+                                <option value="0">No integrator</option>
+                                <option value="1">HEUN</option>
+                                <option value="2">RK45 fixed</option>
+                                <option value="3">RK45 adaptive</option>
+                                <option value="4">AB3M2 fixed</option>
+                                <option value="5">AB3M2 Adaptive</option>
+                            </select>
+                        </div>
+                        <div id="adaptiveSettings" class="conditional">
+                            <div class="form-group">
+                                <label for="start_adapting">Start Adapting After (number of steps):</label>
+                                <input type="number" id="start_adapting" name="start_adapting">
+                            </div>
+                            <div class="form-group">
+                                <label for="Error_tolerance">Error Tolerance (for RK45 and AB3M2):</label>
+                                <input type="number" id="Error_tolerance" name="Error_tolerance" step="any">
+                            </div>
+                            <div class="form-group">
+                                <label for="max_dt">Maximum Step Size Increase Factor (for adaptive methods):</label>
+                                <input type="number" id="max_dt" name="max_dt" step="any">
+                            </div>
+                            <div class="form-group">
+                                <label for="min_dt">Minimum Step Size Decrease Factor (for adaptive methods):</label>
+                                <input type="number" id="min_dt" name="min_dt" step="any">
+                            </div>
+                        </div>
+                    </fieldset>
+            
+                    <fieldset>
+                        <legend>Landau Energy Calculation</legend>
+                        <div class="form-group">
+                            <label for="FLAG_LANDAU_ENERGY">Calculate Landau Energy?</label>
+                            <select id="FLAG_LANDAU_ENERGY" name="FLAG_LANDAU_ENERGY">
+                                <option value="0" >No</option>
+                                <option value="1">Yes</option>
+                            </select>
+                        </div>
+                    </fieldset>            
+                    
+                    <button type="submit">Submit Configuration</button>
+                </form>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const shapeSelect = document.getElementById('FLAG_SHAPE');
+                        const shapeFileUploadDiv = document.getElementById('shape_file_upload');
+                        const shapeFilenameContainer = document.getElementById('shape_filename_container');
+                        const integratorSelect = document.getElementById('FLAG_INTEGRATOR');
+                        const adaptiveSettingsDiv = document.getElementById('adaptiveSettings');
+            
+                        function updateShapeFileVisibility() {
+                            if (shapeSelect.value === '2' || shapeSelect.value === '3') {
+                                shapeFileUploadDiv.style.display = 'block';
+                                shapeFilenameContainer.style.display = 'block';
+                            } else {
+                                shapeFileUploadDiv.style.display = 'none';
+                                shapeFilenameContainer.style.display = 'none';
+                            }
+                        }
+            
+                        function updateAdaptiveSettingsVisibility() {
+                            const selectedIntegrator = integratorSelect.value;
+                            if (selectedIntegrator === '3' || selectedIntegrator === '5') {
+                                adaptiveSettingsDiv.style.display = 'block';
+                            } else {
+                                adaptiveSettingsDiv.style.display = 'none';
+                            }
+                        }
+            
+                        shapeSelect.addEventListener('change', updateShapeFileVisibility);
+                        integratorSelect.addEventListener('change', updateAdaptiveSettingsVisibility);
+            
+                        // Initialize visibility on page load
+                        updateShapeFileVisibility();
+                        updateAdaptiveSettingsVisibility();
+                    });
+                </script>
+                <script>
+                    const rawData2 = document.getElementById("ferro-data2").dataset.geometry;
+                    const List_Ferro_Geometry = JSON.parse(rawData2);
+
+                    document.getElementById("Ncx").value = List_Ferro_Geometry[0];
+                    document.getElementById("Ncy").value = List_Ferro_Geometry[1];
+                    document.getElementById("Ncz").value = List_Ferro_Geometry[2];
+                    document.getElementById("FLAG_SHAPE").value = List_Ferro_Geometry[3];
+                    //document.getElementById("shape_file_input").value = List_Ferro_Geometry[4];
+                    document.getElementById("delta_x").value = List_Ferro_Geometry[5];
+                    document.getElementById("delta_y").value = List_Ferro_Geometry[6];
+                    document.getElementById("delta_z").value = List_Ferro_Geometry[7];
+                    document.getElementById("h_param").value = List_Ferro_Geometry[8];
+                    document.getElementById("duration_time").value = List_Ferro_Geometry[9];
+                    document.getElementById("step_size").value = List_Ferro_Geometry[10];
+                    document.getElementById("FLAG_INTEGRATOR").value = List_Ferro_Geometry[11];
+                    document.getElementById("start_adapting").value = List_Ferro_Geometry[12];
+                    document.getElementById("FLAG_LANDAU_ENERGY").value = List_Ferro_Geometry[13];
+                    document.getElementById("Error_tolerance").value = List_Ferro_Geometry[14];
+                    document.getElementById("max_dt").value = List_Ferro_Geometry[15];
+                    document.getElementById("min_dt").value = List_Ferro_Geometry[16];
+                    
+                    </script>
+            </div>
+            
+            
+            
+
+
+
+            
+            
+
+
+
+
+
+
+
+            <div id="Initial_Polarization" class="tab-content">
+
+                <div id="ferro-data3" data-geometry='{{ List_Initial_Polarization | tojson | safe }}'></div>
+
+                <h3>Initial Polarization</h3>
+                <form action="/Initial_Polarization" method="post" enctype="multipart/form-data">
+
+                    <input type="hidden" name="project_path" value="{{ project_path }}">
+
+                    <fieldset>
+                        <legend>Initial Polarization Settings</legend>
+                        <div class="form-group">
+                            <label for="FLAG_PINICIAL">Initial Polarization Type:</label>
+                            <select id="FLAG_PINICIAL" name="FLAG_PINICIAL">
+                                <option value="1">Uniform</option>
+                                <option value="2">Non-Uniform along Z-axis (from file)</option>
+                                <option value="3">Entirely Non-Uniform (from file)</option>
+                            </select>
+                        </div>
+                    
+                        <div id="uniform_polarization" class="conditional">
+                            <div class="form-group">
+                                <label for="pol_x">Polarization X (Cm⁻²):</label>
+                                <input type="number" id="pol_x" name="pol_x" step="any">
+                                <span class="unit">Cm⁻²</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="pol_y">Polarization Y (Cm⁻²):</label>
+                                <input type="number" id="pol_y" name="pol_y" step="any">
+                                <span class="unit">Cm⁻²</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="pol_z_uniform">Polarization Z (Cm⁻²):</label>
+                                <input type="number" id="pol_z_uniform" name="pol_z_uniform" step="any">
+                                <span class="unit">Cm⁻²</span>
+                            </div>
+                        </div>
+                    
+                        <div id="non_uniform_z" class="conditional" style="display: none;">
+                            <div class="form-group">
+                                <label for="pinicial_z_file">Polarization Z File:</label>
+                                <input type="file" id="pinicial_z_file" name="pinicial_z_file">
+                                <small class="form-text text-muted">Select the file containing the non-uniform polarization along the Z-axis.</small>
+                            </div>
+                        </div>
+                    
+                        <div id="entirely_non_uniform" class="conditional" style="display: none;">
+                            <div class="form-group">
+                                <label for="pinicial_non_uniform_file">Entirely Non-Uniform Polarization File:</label>
+                                <input type="file" id="pinicial_non_uniform_file" name="pinicial_non_uniform_file">
+                                <small class="form-text text-muted">Select the file containing the entirely non-uniform polarization data.</small>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <button type="submit">Submit Configuration</button>
+                    
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const flagPInicialSelect = document.getElementById('FLAG_PINICIAL');
+                            const uniformPolarizationDiv = document.getElementById('uniform_polarization');
+                            const nonUniformZDiv = document.getElementById('non_uniform_z');
+                            const entirelyNonUniformDiv = document.getElementById('entirely_non_uniform');
+                    
+                            function updatePInicialVisibility() {
+                                const selectedFlag = flagPInicialSelect.value;
+                    
+                                if (selectedFlag === '1') {
+                                    uniformPolarizationDiv.style.display = 'block';
+                                    nonUniformZDiv.style.display = 'none';
+                                    entirelyNonUniformDiv.style.display = 'none';
+                                } else if (selectedFlag === '2') {
+                                    uniformPolarizationDiv.style.display = 'none';
+                                    nonUniformZDiv.style.display = 'block';
+                                    entirelyNonUniformDiv.style.display = 'none';
+                                } else if (selectedFlag === '3') {
+                                    uniformPolarizationDiv.style.display = 'none';
+                                    nonUniformZDiv.style.display = 'none';
+                                    entirelyNonUniformDiv.style.display = 'block';
+                                }
+                            }
+                    
+                            flagPInicialSelect.addEventListener('change', updatePInicialVisibility);
+                    
+                            // Initialize visibility on page load
+                            updatePInicialVisibility();
+                        });
+                    </script>
+
+
+                    <script>
+                        const rawData3 = document.getElementById("ferro-data3").dataset.geometry;
+                        const List_Initial_Polarization = JSON.parse(rawData3);
+
+                        document.getElementById("FLAG_PINICIAL").value = List_Initial_Polarization[0];
+                        document.getElementById("pol_x").value = List_Initial_Polarization[1];
+                        document.getElementById("pol_y").value = List_Initial_Polarization[2];
+                        document.getElementById("pol_z_uniform").value = List_Initial_Polarization[3];
+                        //document.getElementById("pinicial_z_file").value = List_Initial_Polarization[4];
+                        //document.getElementById("pinicial_non_uniform_file").value = List_Initial_Polarization[5];
+                        
+ 
+                    </script>
+
+
+                </form>
+            </div>
+            
+            
+            
+
+
+
+
+
+
+
+
+
+
+
+
+            
+            <div id="Landau_Free_Field_Parameters" class="tab-content">
+
+                <div id="ferro-data4" data-geometry='{{ List_Landau_Free | tojson | safe }}'></div>
+            
+                <h3>Landau Free Field Parameters</h3>
+                <form action="/Landau_Free_Field_Parameters" method="post" enctype="multipart/form-data">
+
+                    <input type="hidden" name="project_path" value="{{ project_path }}">
+
+                    <fieldset>
+                        <legend>Landau Free Energy Calculation</legend>
+                        <div class="form-group">
+                            <label for="FLAG_LANDAU">Calculate Landau Free Field?</label>
+                            <select id="FLAG_LANDAU" name="FLAG_LANDAU">
+                                <option value="0" >No</option>
+                                <option value="1">Yes</option>
+                            </select>
+                            <small class="form-text text-muted">0: Not calculated, 1: Calculated (Currently only Flag 1 is working)</small>
+                        </div>
+                    </fieldset>
+                    
+                    <fieldset>
+                        <legend>Noise Settings</legend>
+                        <div class="form-group">
+                            <label for="FLAG_NOISE">Include Random Noise?</label>
+                            <select id="FLAG_NOISE" name="FLAG_NOISE">
+                                <option value="0" >No</option>
+                                <option value="1">Yes</option>
+                                <option value="2">Yes (Alternative)</option>
+                            </select>
+                            <small class="form-text text-muted">0: No noise, 1: Include noise, 2: Include alternative noise</small>
+                        </div>
+                    </fieldset>
+                    
+                    <fieldset>
+                        <legend>Alpha0 Parameter</legend>
+                        <div class="form-group">
+                            <label for="FLAG_ALPHA0">Alpha0 Variation:</label>
+                            <select id="FLAG_ALPHA0" name="FLAG_ALPHA0">
+                                <option value="1" >Constant Value</option>
+                                <option value="2">Varies along Z-axis (from file)</option>
+                                <option value="3">Entirely Non-Uniform (from file)</option>
+                            </select>
+                        </div>
+                        <div id="alpha0_constant_div" class="conditional">
+                            <div class="form-group">
+                                <label for="alpha0_constant">Alpha0 Constant (C⁻¹m²N):</label>
+                                <input type="number" id="alpha0_constant" name="alpha0_constant" step="any">
+                                <span class="unit">C⁻¹m²N</span>
+                            </div>
+                        </div>
+                        <div id="alpha0_z_variable_div" class="conditional" style="display: none;">
+                            <div class="form-group">
+                                <label for="alpha0_z_file">Alpha0 Z-Variable File:</label>
+                                <input type="file" id="alpha0_z_file" name="alpha0_z_file">
+                                <small class="form-text text-muted">File containing alpha0 values along the Z-axis.</small>
+                            </div>
+                        </div>
+                        <div id="alpha0_non_uniform_div" class="conditional" style="display: none;">
+                            <div class="form-group">
+                                <label for="alpha0_non_uniform_file">Alpha0 Non-Uniform File:</label>
+                                <input type="file" id="alpha0_non_uniform_file" name="alpha0_non_uniform_file">
+                                <small class="form-text text-muted">File containing entirely non-uniform alpha0 values.</small>
+                            </div>
+                        </div>
+                    </fieldset>
+                    
+                    <fieldset>
+                        <legend>Alpha2 Parameter</legend>
+                        <div class="form-group">
+                            <label for="FLAG_ALPHA2">Alpha2 Variation:</label>
+                            <select id="FLAG_ALPHA2" name="FLAG_ALPHA2">
+                                <option value="1">Constant Value</option>
+                                <option value="2">Varies along Z-axis (from file)</option>
+                                <option value="3">Entirely Non-Uniform (from file)</option>
+                            </select>
+                        </div>
+                        <div id="alpha2_constant_div" class="conditional" style="display: none;">
+                            <div class="form-group">
+                                <label for="alpha2_constant">Alpha2 Constant (C⁻⁴m⁶N):</label>
+                                <input type="number" id="alpha2_constant" name="alpha2_constant" step="any">
+                                <span class="unit">C⁻⁴m⁶N</span>
+                            </div>
+                        </div>
+                        <div id="alpha2_z_variable_div" class="conditional">
+                            <div class="form-group">
+                                <label for="alpha2_z_file">Alpha2 Z-Variable File:</label>
+                                <input type="file" id="alpha2_z_file" name="alpha2_z_file">
+                                <small class="form-text text-muted">File containing alpha2 values along the Z-axis.</small>
+                            </div>
+                        </div>
+                        <div id="alpha2_non_uniform_div" class="conditional" style="display: none;">
+                            <div class="form-group">
+                                <label for="alpha2_non_uniform_file">Alpha2 Non-Uniform File:</label>
+                                <input type="file" id="alpha2_non_uniform_file" name="alpha2_non_uniform_file">
+                                <small class="form-text text-muted">File containing entirely non-uniform alpha2 values.</small>
+                            </div>
+                        </div>
+                    </fieldset>
+                    
+                    <fieldset>
+                        <legend>Alpha3 Parameter</legend>
+                        <div class="form-group">
+                            <label for="FLAG_ALPHA3">Alpha3 Variation:</label>
+                            <select id="FLAG_ALPHA3" name="FLAG_ALPHA3">
+                                <option value="1">Constant Value</option>
+                                <option value="2" >Varies along Z-axis (from file)</option>
+                                <option value="3">Entirely Non-Uniform (from file)</option>
+                            </select>
+                        </div>
+                        <div id="alpha3_constant_div" class="conditional" style="display: none;">
+                            <div class="form-group">
+                                <label for="alpha3_constant">Alpha3 Constant (C⁻⁴m⁶N):</label>
+                                <input type="number" id="alpha3_constant" name="alpha3_constant" step="any">
+                                <span class="unit">C⁻⁴m⁶N</span>
+                            </div>
+                        </div>
+                        <div id="alpha3_z_variable_div" class="conditional">
+                            <div class="form-group">
+                                <label for="alpha3_z_file">Alpha3 Z-Variable File:</label>
+                                <input type="file" id="alpha3_z_file" name="alpha3_z_file">
+                                <small class="form-text text-muted">File containing alpha3 values along the Z-axis.</small>
+                            </div>
+                        </div>
+                        <div id="alpha3_non_uniform_div" class="conditional" style="display: none;">
+                            <div class="form-group">
+                                <label for="alpha3_non_uniform_file">Alpha3 Non-Uniform File:</label>
+                                <input type="file" id="alpha3_non_uniform_file" name="alpha3_non_uniform_file">
+                                <small class="form-text text-muted">File containing entirely non-uniform alpha3 values.</small>
+                            </div>
+                        </div>
+                    </fieldset>
+                    
+                    <fieldset>
+                        <legend>Alpha4 Parameter</legend>
+                        <div class="form-group">
+                            <label for="FLAG_ALPHA4">Alpha4 Variation:</label>
+                            <select id="FLAG_ALPHA4" name="FLAG_ALPHA4">
+                                <option value="1">Constant Value</option>
+                                <option value="2" >Varies along Z-axis (from file)</option>
+                                <option value="3">Entirely Non-Uniform (from file)</option>
+                            </select>
+                        </div>
+                        <div id="alpha4_constant_div" class="conditional" style="display: none;">
+                            <div class="form-group">
+                                <label for="alpha4_constant">Alpha4 Constant (C⁻⁶m¹⁰N):</label>
+                                <input type="number" id="alpha4_constant" name="alpha4_constant" step="any">
+                                <span class="unit">C⁻⁶m¹⁰N</span>
+                            </div>
+                        </div>
+                        <div id="alpha4_z_variable_div" class="conditional">
+                            <div class="form-group">
+                                <label for="alpha4_z_file">Alpha4 Z-Variable File:</label>
+                                <input type="file" id="alpha4_z_file" name="alpha4_z_file">
+                                <small class="form-text text-muted">File containing alpha4 values along the Z-axis.</small>
+                            </div>
+                        </div>
+                        <div id="alpha4_non_uniform_div" class="conditional" style="display: none;">
+                            <div class="form-group">
+                                <label for="alpha4_non_uniform_file">Alpha4 Non-Uniform File:</label>
+                                <input type="file" id="alpha4_non_uniform_file" name="alpha4_non_uniform_file">
+                                <small class="form-text text-muted">File containing entirely non-uniform alpha4 values.</small>
+                            </div>
+                        </div>
+                    </fieldset>
+                    
+                    <fieldset>
+                        <legend>Alpha5 Parameter</legend>
+                        <div class="form-group">
+                            <label for="FLAG_ALPHA5">Alpha5 Variation:</label>
+                            <select id="FLAG_ALPHA5" name="FLAG_ALPHA5">
+                                <option value="1">Constant Value</option>
+                                <option value="2" >Varies along Z-axis (from file)</option>
+                                <option value="3">Entirely Non-Uniform (from file)</option>
+                            </select>
+                        </div>
+                        <div id="alpha5_constant_div" class="conditional" style="display: none;">
+                            <div class="form-group">
+                                <label for="alpha5_constant">Alpha5 Constant (C⁻⁶m¹⁰N):</label>
+                                <input type="number" id="alpha5_constant" name="alpha5_constant" step="any">
+                                <span class="unit">C⁻⁶m¹⁰N</span>
+                            </div>
+                        </div>
+                        <div id="alpha5_z_variable_div" class="conditional">
+                            <div class="form-group">
+                                <label for="alpha5_z_file">Alpha5 Z-Variable File:</label>
+                                <input type="file" id="alpha5_z_file" name="alpha5_z_file">
+                                <small class="form-text text-muted">File containing alpha5 values along the Z-axis.</small>
+                            </div>
+                        </div>
+                        <div id="alpha5_non_uniform_div" class="conditional" style="display: none;">
+                            <div class="form-group">
+                                <label for="alpha5_non_uniform_file">Alpha5 Non-Uniform File:</label>
+                                <input type="file" id="alpha5_non_uniform_file" name="alpha5_non_uniform_file">
+                                <small class="form-text text-muted">File containing entirely non-uniform alpha5 values.</small>
+                            </div>
+                        </div>
+                    </fieldset>
+                    
+                    <fieldset>
+                        <legend>Alpha6 Parameter</legend>
+                        <div class="form-group">
+                            <label for="FLAG_ALPHA6">Alpha6 Variation:</label>
+                            <select id="FLAG_ALPHA6" name="FLAG_ALPHA6">
+                                <option value="1">Constant Value</option>
+                                <option value="2" >Varies along Z-axis (from file)</option>
+                                <option value="3">Entirely Non-Uniform (from file)</option>
+                            </select>
+                        </div>
+                        <div id="alpha6_constant_div" class="conditional" style="display: none;">
+                            <div class="form-group">
+                                <label for="alpha6_constant">Alpha6 Constant (C⁻⁶m¹⁰N):</label>
+                                <input type="number" id="alpha6_constant" name="alpha6_constant" step="any">
+                                <span class="unit">C⁻⁶m¹⁰N</span>
+                            </div>
+                        </div>
+                        <div id="alpha6_z_variable_div" class="conditional">
+                            <div class="form-group">
+                                <label for="alpha6_z_file">Alpha6 Z-Variable File:</label>
+                                <input type="file" id="alpha6_z_file" name="alpha6_z_file">
+                                <small class="form-text text-muted">File containing alpha6 values along the Z-axis.</small>
+                            </div>
+                        </div>
+                        <div id="alpha6_non_uniform_div" class="conditional" style="display: none;">
+                            <div class="form-group">
+                                <label for="alpha6_non_uniform_file">Alpha6 Non-Uniform File:</label>
+                                <input type="file" id="alpha6_non_uniform_file" name="alpha6_non_uniform_file">
+                                <small class="form-text text-muted">File containing entirely non-uniform alpha6 values.</small>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <div class="form-group">
+                        <label for="reference_polarization_x">Reference Polarization X (C/m²):</label>
+                        <input type="number" id="reference_polarization_x" name="reference_polarization_x" step="any">
+                        <span class="unit">C/m²</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="reference_polarization_y">Reference Polarization Y (C/m²):</label>
+                        <input type="number" id="reference_polarization_y" name="reference_polarization_y" step="any">
+                        <span class="unit">C/m²</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="reference_polarization_z">Reference Polarization Z (C/m²):</label>
+                        <input type="number" id="reference_polarization_z" name="reference_polarization_z" step="any">
+                        <span class="unit">C/m²</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="alpha1_reference">Alpha1 Reference Constant (C⁻²m²N):</label>
+                        <input type="number" id="alpha1_reference" name="alpha1_reference" step="any">
+                        <span class="unit">C⁻²m²N</span>
+                    </div>
+                </fieldset>
+                
+                <fieldset>
+                    <legend>Susceptibility Weights</legend>
+                    <div class="form-group">
+                        <label for="FLAG_SUSCIPTIBILITY_WEIGHTS">Susceptibility Weights Variation:</label>
+                        <select id="FLAG_SUSCIPTIBILITY_WEIGHTS" name="FLAG_SUSCIPTIBILITY_WEIGHTS">
+                            <option value="1">Constant Value</option>
+                            <option value="2" >Varies along Z-axis (from file)</option>
+                            <option value="3">Entirely Non-Uniform (from file)</option>
+                        </select>
+                    </div>
+                    <div id="susceptibility_weights_constant_div" class="conditional">
+                        <div class="form-group">
+                            <label for="susiptibilityWeight">Susceptibility Weight Value:</label>
+                            <input type="number" id="susiptibilityWeight" name="susiptibilityWeight" step="any">
+                        </div>
+                    </div>
+                    <div id="susceptibility_weights_z_variable_div" class="conditional">
+                        <div class="form-group">
+                            <label for="susciptibilityWeights_z_file">Susceptibility Weights Z-Variable File:</label>
+                            <input type="file" id="susciptibilityWeights_z_file" name="susciptibilityWeights_z_file">
+                            <small class="form-text text-muted">File containing susceptibility weights along the Z-axis.</small>
+                        </div>
+                    </div>
+                    <div id="susceptibility_weights_non_uniform_div" class="conditional" style="display: none;">
+                        <div class="form-group">
+                            <label for="susciptibilityWeights_non_uniform_file">Susceptibility Weights Non-Uniform File:</label>
+                            <input type="file" id="susciptibilityWeights_non_uniform_file" name="susciptibilityWeights_non_uniform_file">
+                            <small class="form-text text-muted">File containing entirely non-uniform susceptibility weights.</small>
+                        </div>
+                    </div>
+                </fieldset>
+                
+                <fieldset>
+                    <legend>Temperature</legend>
+                    <div class="form-group">
+                        <label for="FLAG_TEMPERATURE">Temperature Variation:</label>
+                        <select id="FLAG_TEMPERATURE" name="FLAG_TEMPERATURE">
+                            <option value="1" >Constant Value</option>
+                            <option value="2">Varies along Z-axis (from file)</option>
+                            <option value="3">Entirely Non-Uniform (from file)</option>
+                        </select>
+                    </div>
+                    <div id="temperature_constant_div" class="conditional">
+                        <div class="form-group">
+                            <label for="temperature">Temperature (K):</label>
+                            <input type="number" id="temperature" name="temperature" step="any">
+                            <span class="unit">K</span>
+                        </div>
+                    </div>
+                    <div id="temperature_z_variable_div" class="conditional" style="display: none;">
+                        <div class="form-group">
+                            <label for="temperature_z_file">Temperature Z-Variable File:</label>
+                            <input type="file" id="temperature_z_file" name="temperature_z_file">
+                            <small class="form-text text-muted">File containing temperature values along the Z-axis.</small>
+                        </div>
+                    </div>
+                    <div id="temperature_non_uniform_div" class="conditional" style="display: none;">
+                        <div class="form-group">
+                            <label for="temperature_non_uniform_file">Temperature Non-Uniform File:</label>
+                            <input type="file" id="temperature_non_uniform_file" name="temperature_non_uniform_file">
+                            <small class="form-text text-muted">File containing entirely non-uniform temperature values.</small>
+                        </div>
+                    </div>
+                </fieldset>
+                
+                <fieldset>
+                    <legend>Transition Temperature</legend>
+                    <div class="form-group">
+                        <label for="FLAG_TRANSITION_TEMP">Transition Temperature Variation:</label>
+                        <select id="FLAG_TRANSITION_TEMP" name="FLAG_TRANSITION_TEMP">
+                            <option value="1" >Constant Value</option>
+                            <option value="2">Varies along Z-axis (from file)</option>
+                            <option value="3">Entirely Non-Uniform (from file)</option>
+                        </select>
+                    </div>
+                    <div id="transition_temp_constant_div" class="conditional">
+                        <div class="form-group">
+                            <label for="transition_temperature">Transition Temperature (K):</label>
+                            <input type="number" id="transition_temperature" name="transition_temperature" step="any">
+                            <span class="unit">K</span>
+                        </div>
+                    </div>
+                    <div id="transition_temp_z_variable_div" class="conditional" style="display: none;">
+                        <div class="form-group">
+                            <label for="transitionTemp_z_file">Transition Temperature Z-Variable File:</label>
+                            <input type="file" id="transitionTemp_z_file" name="transitionTemp_z_file">
+                            <small class="form-text text-muted">File containing transition temperature values along the Z-axis.</small>
+                        </div>
+                    </div>
+                    <div id="transition_temp_non_uniform_div" class="conditional" style="display: none;">
+                        <div class="form-group">
+                            <label for="transitionTemp_non_uniform_file">Transition Temperature Non-Uniform File:</label>
+                            <input type="file" id="transitionTemp_non_uniform_file" name="transitionTemp_non_uniform_file">
+                            <small class="form-text text-muted">File containing entirely non-uniform transition temperature values.</small>
+                        </div>
+                    </div>
+                </fieldset>
+                
+                <fieldset>
+                    <legend>Relaxation Coefficient</legend>
+                    <div class="form-group">
+                        <label for="FLAG_RELAXATION">Relaxation Coefficient Variation:</label>
+                        <select id="FLAG_RELAXATION" name="FLAG_RELAXATION">
+                            <option value="1">Constant Value</option>
+                            <option value="2" >Varies along Z-axis (from file)</option>
+                            <option value="3">Entirely Non-Uniform (from file)</option>
+                        </select>
+                    </div>
+                    <div id="relaxation_constant_div" class="conditional">
+                        <div class="form-group">
+                            <label for="relaxation">Relaxation Coefficient (s⁻¹m⁻²C²N⁻¹):</label>
+                            <input type="number" id="relaxation" name="relaxation" step="any">
+                            <span class="unit">s⁻¹m⁻²C²N⁻¹</span>
+                        </div>
+                    </div>
+                    <div id="relaxation_z_variable_div" class="conditional">
+                        <div class="form-group">
+                            <label for="relaxation_z_file">Relaxation Coefficient Z-Variable File:</label>
+                            <input type="file" id="relaxation_z_file" name="relaxation_z_file">
+                            <small class="form-text text-muted">File containing relaxation coefficient values along the Z-axis.</small>
+                        </div>
+                    </div>
+                    <div id="relaxation_non_uniform_div" class="conditional" style="display: none;">
+                        <div class="form-group">
+                            <label for="relaxation_non_uniform_file">Relaxation Coefficient Non-Uniform File:</label>
+                            <input type="file" id="relaxation_non_uniform_file" name="relaxation_non_uniform_file">
+                            <small class="form-text text-muted">File containing entirely non-uniform relaxation coefficient values.</small>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="reference_relaxation">Reference Relaxation Coefficient (s⁻¹m⁻²C²N⁻¹):</label>
+                        <input type="number" id="reference_relaxation" name="reference_relaxation" step="any">
+                        <span class="unit">s⁻¹m⁻²C²N⁻¹</span>
+                    </div>
+                </fieldset>
+                <button type="submit">Submit Configuration</button>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        function setupConditionalFields(flagId, constantDivId, zVariableDivId, nonUniformDivId) {
+                            const flagSelect = document.getElementById(flagId);
+                            const constantDiv = document.getElementById(constantDivId);
+                            const zVariableDiv = document.getElementById(zVariableDivId);
+                            const nonUniformDiv = document.getElementById(nonUniformDivId);
+                
+                            function updateVisibility() {
+                                const selectedFlag = flagSelect.value;
+                                constantDiv.style.display = selectedFlag === '1' ? 'block' : 'none';
+                                zVariableDiv.style.display = selectedFlag === '2' ? 'block' : 'none';
+                                nonUniformDiv.style.display = selectedFlag === '3' ? 'block' : 'none';
+                            }
+                
+                            flagSelect.addEventListener('change', updateVisibility);
+                            updateVisibility(); // Initialize on load
+                        }
+                
+                        setupConditionalFields('FLAG_ALPHA0', 'alpha0_constant_div', 'alpha0_z_variable_div', 'alpha0_non_uniform_div');
+                        setupConditionalFields('FLAG_ALPHA2', 'alpha2_constant_div', 'alpha2_z_variable_div', 'alpha2_non_uniform_div');
+                        setupConditionalFields('FLAG_ALPHA3', 'alpha3_constant_div', 'alpha3_z_variable_div', 'alpha3_non_uniform_div');
+                        setupConditionalFields('FLAG_ALPHA4', 'alpha4_constant_div', 'alpha4_z_variable_div', 'alpha4_non_uniform_div');
+                        setupConditionalFields('FLAG_ALPHA5', 'alpha5_constant_div', 'alpha5_z_variable_div', 'alpha5_non_uniform_div');
+                        setupConditionalFields('FLAG_ALPHA6', 'alpha6_constant_div', 'alpha6_z_variable_div', 'alpha6_non_uniform_div');
+                        setupConditionalFields('FLAG_SUSCIPTIBILITY_WEIGHTS', 'susceptibility_weights_constant_div', 'susceptibility_weights_z_variable_div', 'susceptibility_weights_non_uniform_div');
+                        setupConditionalFields('FLAG_TEMPERATURE', 'temperature_constant_div', 'temperature_z_variable_div', 'temperature_non_uniform_div');
+                        setupConditionalFields('FLAG_TRANSITION_TEMP', 'transition_temp_constant_div', 'transition_temp_z_variable_div', 'transition_temp_non_uniform_div');
+                        setupConditionalFields('FLAG_RELAXATION', 'relaxation_constant_div', 'relaxation_z_variable_div', 'relaxation_non_uniform_div');
+                    });
+                </script>
+            
+            
+                <script>
+                    const rawData4 = document.getElementById("ferro-data4").dataset.geometry;
+                    const List_Landau_Free = JSON.parse(rawData4);
+            
+                    document.getElementById("FLAG_LANDAU").value = List_Landau_Free[0];
+                    document.getElementById("FLAG_NOISE").value = List_Landau_Free[1];
+                    document.getElementById("FLAG_ALPHA0").value = List_Landau_Free[2];
+                    document.getElementById("alpha0_constant").value = List_Landau_Free[3];
+                    //document.getElementById("alpha0_z_file").value = List_Landau_Free[4];
+                    //document.getElementById("alpha0_non_uniform_file").value = List_Landau_Free[5];
+                    document.getElementById("FLAG_ALPHA2").value = List_Landau_Free[6];
+                    document.getElementById("alpha2_constant").value = List_Landau_Free[7];
+                    //document.getElementById("alpha2_z_file").value = List_Landau_Free[8];
+                    //document.getElementById("alpha2_non_uniform_file").value = List_Landau_Free[9];
+                    document.getElementById("FLAG_ALPHA3").value = List_Landau_Free[10];
+                    document.getElementById("alpha3_constant").value = List_Landau_Free[11];
+                    //document.getElementById("alpha3_z_file").value = List_Landau_Free[12];
+                    //document.getElementById("alpha3_non_uniform_file").value = List_Landau_Free[13];
+                    document.getElementById("FLAG_ALPHA4").value = List_Landau_Free[14];
+                    document.getElementById("alpha4_constant").value = List_Landau_Free[15];
+                    //document.getElementById("alpha4_z_file").value = List_Landau_Free[16];
+                    //document.getElementById("alpha4_non_uniform_file").value = List_Landau_Free[17];
+                    document.getElementById("FLAG_ALPHA5").value = List_Landau_Free[18];
+                    document.getElementById("alpha5_constant").value = List_Landau_Free[19];
+                    //document.getElementById("alpha5_z_file").value = List_Landau_Free[20];
+                    //document.getElementById("alpha5_non_uniform_file").value = List_Landau_Free[21];
+                    document.getElementById("FLAG_ALPHA6").value = List_Landau_Free[22];
+                    document.getElementById("alpha6_constant").value = List_Landau_Free[23];
+                    //document.getElementById("alpha6_z_file").value = List_Landau_Free[24];
+                    //document.getElementById("alpha6_non_uniform_file").value = List_Landau_Free[25];
+                    document.getElementById("reference_polarization_x").value = List_Landau_Free[26];
+                    document.getElementById("reference_polarization_y").value = List_Landau_Free[27];
+                    document.getElementById("reference_polarization_z").value = List_Landau_Free[28];
+                    document.getElementById("alpha1_reference").value = List_Landau_Free[29];
+                    document.getElementById("FLAG_SUSCIPTIBILITY_WEIGHTS").value = List_Landau_Free[30];
+                    document.getElementById("susiptibilityWeight").value = List_Landau_Free[31];
+                    //document.getElementById("susciptibilityWeights_z_file").value = List_Landau_Free[32];
+                    //document.getElementById("susciptibilityWeights_non_uniform_file").value = List_Landau_Free[33];
+                    document.getElementById("FLAG_TEMPERATURE").value = List_Landau_Free[34];
+                    document.getElementById("temperature").value = List_Landau_Free[35];
+                    //document.getElementById("temperature_z_file").value = List_Landau_Free[36];
+                    //document.getElementById("temperature_non_uniform_file").value = List_Landau_Free[37];
+                    document.getElementById("FLAG_TRANSITION_TEMP").value = List_Landau_Free[38];
+                    document.getElementById("transition_temperature").value = List_Landau_Free[39];
+                    //document.getElementById("transitionTemp_z_file").value = List_Landau_Free[40];
+                    //document.getElementById("transitionTemp_non_uniform_file").value = List_Landau_Free[41];
+                    document.getElementById("FLAG_RELAXATION").value = List_Landau_Free[42];
+                    document.getElementById("relaxation").value = List_Landau_Free[43];
+                    //document.getElementById("relaxation_z_file").value = List_Landau_Free[44];
+                    //document.getElementById("relaxation_non_uniform_file").value = List_Landau_Free[45];       
+                    document.getElementById("reference_relaxation").value = List_Landau_Free[46];
+
+                </script>
+                </form>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <div id="Gradient_Field_Parameters" class="tab-content">
+
+                <div id="ferro-data5" data-geometry='{{ List_Gradient_Field | tojson | safe }}'></div>
+
+                <h3>Gradient Field Parameters</h3>
+                <form action="/Gradient_Field_Parameters" method="post" enctype="multipart/form-data">  
+                    
+                    <input type="hidden" name="project_path" value="{{ project_path }}">
+
+                    <fieldset>
+                        <legend>Gradient Energy</legend>
+                        <div class="form-group">
+                            <label for="FLAG_GRADIENT">Calculate Gradient Energy?</label>
+                            <select id="FLAG_GRADIENT" name="FLAG_GRADIENT">
+                                <option value="0">No</option>
+                                <option value="1" >Yes</option>
+                            </select>
+                            <small class="form-text text-muted">0: Not calculated, 1: Calculated</small>
+                        </div>
+                    
+                        <fieldset>
+                            <legend>G0 Parameter</legend>
+                            <div class="form-group">
+                                <label for="FLAG_G0">G0 Variation:</label>
+                                <select id="FLAG_G0" name="FLAG_G0">
+                                    <option value="1" >Constant Value</option>
+                                    <option value="2">Varies along Z-axis (from file)</option>
+                                    <option value="3">Entirely Non-Uniform (from file)</option>
+                                </select>
+                            </div>
+                            <div id="G0_constant_div" class="conditional">
+                                <div class="form-group">
+                                    <label for="G0_constant">G0 Constant (m⁴NC⁻²):</label>
+                                    <input type="number" id="G0_constant" name="G0_constant" step="any" placeholder="Default G0">
+                                    <span class="unit">m⁴NC⁻²</span>
+                                </div>
+                            </div>
+                            <div id="G0_z_variable_div" class="conditional" style="display: none;">
+                                <div class="form-group">
+                                    <label for="G0_z_file">G0 Z-Variable File:</label>
+                                    <input type="file" id="G0_z_file" name="G0_z_file">
+                                    <small class="form-text text-muted">File containing G0 values along the Z-axis.</small>
+                                </div>
+                            </div>
+                            <div id="G0_non_uniform_div" class="conditional" style="display: none;">
+                                <div class="form-group">
+                                    <label for="G0_non_uniform_file">G0 Non-Uniform File:</label>
+                                    <input type="file" id="G0_non_uniform_file" name="G0_non_uniform_file">
+                                    <small class="form-text text-muted">File containing entirely non-uniform G0 values.</small>
+                                </div>
+                            </div>
+                        </fieldset>
+                    
+                        <fieldset>
+                            <legend>G1 Parameter</legend>
+                            <div class="form-group">
+                                <label for="FLAG_G1">G1 Variation:</label>
+                                <select id="FLAG_G1" name="FLAG_G1">
+                                    <option value="1">Constant Value</option>
+                                    <option value="2" >Varies along Z-axis (from file)</option>
+                                    <option value="3">Entirely Non-Uniform (from file)</option>
+                                </select>
+                            </div>
+                            <div id="G1_constant_div" class="conditional" style="display: none;">
+                                <div class="form-group">
+                                    <label for="G1_constant">G1 Constant (m⁴NC⁻²):</label>
+                                    <input type="number" id="G1_constant" name="G1_constant" step="any" placeholder="Default G1">
+                                    <span class="unit">m⁴NC⁻²</span>
+                                </div>
+                            </div>
+                            <div id="G1_z_variable_div" class="conditional">
+                                <div class="form-group">
+                                    <label for="G1_z_file">G1 Z-Variable File:</label>
+                                    <input type="file" id="G1_z_file" name="G1_z_file">
+                                    <small class="form-text text-muted">File containing G1 values along the Z-axis.</small>
+                                </div>
+                            </div>
+                            <div id="G1_non_uniform_div" class="conditional" style="display: none;">
+                                <div class="form-group">
+                                    <label for="G1_non_uniform_file">G1 Non-Uniform File:</label>
+                                    <input type="file" id="G1_non_uniform_file" name="G1_non_uniform_file">
+                                    <small class="form-text text-muted">File containing entirely non-uniform G1 values.</small>
+                                </div>
+                            </div>
+                        </fieldset>
+                    
+                        <fieldset>
+                            <legend>G2 Parameter</legend>
+                            <div class="form-group">
+                                <label for="FLAG_G2">G2 Variation:</label>
+                                <select id="FLAG_G2" name="FLAG_G2">
+                                    <option value="1" >Constant Value</option>
+                                    <option value="2">Varies along Z-axis (from file)</option>
+                                    <option value="3">Entirely Non-Uniform (from file)</option>
+                                </select>
+                            </div>
+                            <div id="G2_constant_div" class="conditional">
+                                <div class="form-group">
+                                    <label for="G2_constant">G2 Constant (m⁴NC⁻²):</label>
+                                    <input type="number" id="G2_constant" name="G2_constant" step="any" placeholder="Default G2">
+                                    <span class="unit">m⁴NC⁻²</span>
+                                </div>
+                            </div>
+                            <div id="G2_z_variable_div" class="conditional" style="display: none;">
+                                <div class="form-group">
+                                    <label for="G2_z_file">G2 Z-Variable File:</label>
+                                    <input type="file" id="G2_z_file" name="G2_z_file">
+                                    <small class="form-text text-muted">File containing G2 values along the Z-axis.</small>
+                                </div>
+                            </div>
+                            <div id="G2_non_uniform_div" class="conditional" style="display: none;">
+                                <div class="form-group">
+                                    <label for="G2_non_uniform_file">G2 Non-Uniform File:</label>
+                                    <input type="file" id="G2_non_uniform_file" name="G2_non_uniform_file">
+                                    <small class="form-text text-muted">File containing entirely non-uniform G2 values.</small>
+                                </div>
+                            </div>
+                        </fieldset>
+                    
+                        <fieldset>
+                            <legend>G3 Parameter</legend>
+                            <div class="form-group">
+                                <label for="FLAG_G3">G3 Variation:</label>
+                                <select id="FLAG_G3" name="FLAG_G3">
+                                    <option value="1">Constant Value</option>
+                                    <option value="2" >Varies along Z-axis (from file)</option>
+                                    <option value="3">Entirely Non-Uniform (from file)</option>
+                                </select>
+                            </div>
+                            <div id="G3_constant_div" class="conditional" style="display: none;">
+                                <div class="form-group">
+                                    <label for="G3_constant">G3 Constant (m⁴NC⁻²):</label>
+                                    <input type="number" id="G3_constant" name="G3_constant" step="any" placeholder="Default G3">
+                                    <span class="unit">m⁴NC⁻²</span>
+                                </div>
+                            </div>
+                            <div id="G3_z_variable_div" class="conditional">
+                                <div class="form-group">
+                                    <label for="G3_z_file">G3 Z-Variable File:</label>
+                                    <input type="file" id="G3_z_file" name="G3_z_file">
+                                    <small class="form-text text-muted">File containing G3 values along the Z-axis.</small>
+                                </div>
+                            </div>
+                            <div id="G3_non_uniform_div" class="conditional" style="display: none;">
+                                <div class="form-group">
+                                    <label for="G3_non_uniform_file">G3 Non-Uniform File:</label>
+                                    <input type="file" id="G3_non_uniform_file" name="G3_non_uniform_file">
+                                    <small class="form-text text-muted">File containing entirely non-uniform G3 values.</small>
+                                </div>
+                            </div>
+                        </fieldset>
+                    
+                        <fieldset>
+                            <legend>G4 Parameter</legend>
+                            <div class="form-group">
+                                <label for="FLAG_G4">G4 Variation:</label>
+                                <select id="FLAG_G4" name="FLAG_G4">
+                                    <option value="1">Constant Value</option>
+                                    <option value="2" >Varies along Z-axis (from file)</option>
+                                    <option value="3">Entirely Non-Uniform (from file)</option>
+                                </select>
+                            </div>
+                            <div id="G4_constant_div" class="conditional" style="display: none;">
+                                <div class="form-group">
+                                    <label for="G4_constant">G4 Constant (m⁴NC⁻²):</label>
+                                    <input type="number" id="G4_constant" name="G4_constant" step="any" placeholder="Default G4">
+                                    <span class="unit">m⁴NC⁻²</span>
+                                </div>
+                            </div>
+                            <div id="G4_z_variable_div" class="conditional">
+                                <div class="form-group">
+                                    <label for="G4_z_file">G4 Z-Variable File:</label>
+                                    <input type="file" id="G4_z_file" name="G4_z_file">
+                                    <small class="form-text text-muted">File containing G4 values along the Z-axis.</small>
+                                </div>
+                            </div>
+                            <div id="G4_non_uniform_div" class="conditional" style="display: none;">
+                                <div class="form-group">
+                                    <label for="G4_non_uniform_file">G4 Non-Uniform File:</label>
+                                    <input type="file" id="G4_non_uniform_file" name="G4_non_uniform_file">
+                                    <small class="form-text text-muted">File containing entirely non-uniform G4 values.</small>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </fieldset>
+                    
+                    <fieldset>
+                        <legend>Boundary Conditions</legend>
+                        <div class="form-group">
+                            <label for="FLAG_BC">Boundary Condition Type:</label>
+                            <select id="FLAG_BC" name="FLAG_BC">
+                                <option value="0" >Simple (Neumann boundary conditions with zero flux)</option>
+                                <option value="1">Open (Dirichlet boundary conditions with zero value at the boundary)</option>
+                                <option value="2">Periodic boundary conditions</option>
+                            </select>
+                            <small class="form-text text-muted">0: Simple (Neumann, zero flux), 1: Open (Dirichlet, zero value), 2: Periodic</small>
+                        </div>
+                    </fieldset>
+                    <button type="submit">Submit Configuration</button>
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            function setupConditionalFields(flagId, constantDivId, zVariableDivId, nonUniformDivId) {
+                                const flagSelect = document.getElementById(flagId);
+                                const constantDiv = document.getElementById(constantDivId);
+                                const zVariableDiv = document.getElementById(zVariableDivId);
+                                const nonUniformDiv = document.getElementById(nonUniformDivId);
+                    
+                                function updateVisibility() {
+                                    const selectedFlag = flagSelect.value;
+                                    constantDiv.style.display = selectedFlag === '1' ? 'block' : 'none';
+                                    zVariableDiv.style.display = selectedFlag === '2' ? 'block' : 'none';
+                                    nonUniformDiv.style.display = selectedFlag === '3' ? 'block' : 'none';
+                                }
+                    
+                                flagSelect.addEventListener('change', updateVisibility);
+                                updateVisibility(); // Initialize on load
+                            }
+                    
+                            setupConditionalFields('FLAG_G0', 'G0_constant_div', 'G0_z_variable_div', 'G0_non_uniform_div');
+                            setupConditionalFields('FLAG_G1', 'G1_constant_div', 'G1_z_variable_div', 'G1_non_uniform_div');
+                            setupConditionalFields('FLAG_G2', 'G2_constant_div', 'G2_z_variable_div', 'G2_non_uniform_div');
+                            setupConditionalFields('FLAG_G3', 'G3_constant_div', 'G3_z_variable_div', 'G3_non_uniform_div');
+                            setupConditionalFields('FLAG_G4', 'G4_constant_div', 'G4_z_variable_div', 'G4_non_uniform_div');
+                        });
+                    </script>
+
+                    <script>
+                        const rawData5 = document.getElementById("ferro-data5").dataset.geometry;
+                        const List_Gradient_Field = JSON.parse(rawData5);
+
+                        document.getElementById("FLAG_GRADIENT").value = List_Gradient_Field[0];
+                        document.getElementById("G0_constant").value = List_Gradient_Field[1];
+                        document.getElementById("FLAG_G1").value = List_Gradient_Field[2];
+                        document.getElementById("G1_constant").value = List_Gradient_Field[3];
+                        //document.getElementById("G1_z_file").value = List_Gradient_Field[4];
+                        //document.getElementById("G1_non_uniform_file").value = List_Gradient_Field[5];
+                        document.getElementById("FLAG_G2").value = List_Gradient_Field[6];
+                        document.getElementById("G2_constant").value = List_Gradient_Field[7];
+                        //document.getElementById("G2_z_file").value = List_Gradient_Field[8];
+                        //document.getElementById("G2_non_uniform_file").value = List_Gradient_Field[9];
+                        document.getElementById("FLAG_G3").value = List_Gradient_Field[10];
+                        document.getElementById("G3_constant").value = List_Gradient_Field[11];
+                        //document.getElementById("G3_z_file").value = List_Gradient_Field[12];
+                        //document.getElementById("G3_non_uniform_file").value = List_Gradient_Field[13];
+                        document.getElementById("FLAG_G4").value = List_Gradient_Field[14];
+                        document.getElementById("G4_constant").value = List_Gradient_Field[15];
+                        //document.getElementById("G4_z_file").value = List_Gradient_Field[16];
+                        //document.getElementById("G4_non_uniform_file").value = List_Gradient_Field[17];
+                        document.getElementById("FLAG_BC").value = List_Gradient_Field[18];
+              
+                    </script>
+
+                </form>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <div id="External_Field" class="tab-content">
+
+                <div id="ferro-data6" data-geometry='{{ List_External_Field | tojson | safe }}'></div>
+
+                <h3>External Field (External Excitation Parameters)</h3>
+                <form action="/External_Field" method="post" enctype="multipart/form-data" enctype="multipart/form-data">
+
+                    <input type="hidden" name="project_path" value="{{ project_path }}">
+
+                    <fieldset>
+                        <legend>DC External Field</legend>
+                        <div class="form-group">
+                          <label for="flag_field">FLAG_FIELD:</label>
+                          <select id="flag_field" name="flag_field">
+                            <option value="0" >No Field</option>
+                            <option value="1">Constant</option>
+                            <option value="2">Z-Variable</option>
+                            <option value="3">Non-Uniform</option>
+                          </select>
+                        </div>
+                    
+                        <div class="form-group" id="input_type_group" style="display:none;">
+                          <label for="flag_input_type">FLAG_INPUT_TYPE:</label>
+                          <select id="flag_input_type" name="flag_input_type">
+                            <option value="1" >Spherical</option>
+                            <option value="2">Cartesian</option>
+                          </select>
+                        </div>
+                    
+                        <div class="form-group" id="constant_field_spherical" style="display:none;">
+                          <label for="field_ext_spherical">Field Ext (V/m):</label>
+                          <input type="number" id="field_ext_spherical" name="field_ext_spherical">
+                          <label for="h_theta">H_theta:</label>
+                          <input type="number" id="h_theta" name="h_theta">
+                          <label for="h_phi">H_phi:</label>
+                          <input type="number" id="h_phi" name="h_phi">
+                        </div>
+                    
+                        <div class="form-group" id="constant_field_cartesian" style="display:none;">
+                          <label for="h_x">H_x:</label>
+                          <input type="number" id="h_x" name="h_x">
+                          <label for="h_y">H_y:</label>
+                          <input type="number" id="h_y" name="h_y">
+                          <label for="h_z">H_z:</label>
+                          <input type="number" id="h_z" name="h_z">
+                        </div>
+                    
+                        <div class="form-group" id="z_variable_field_group" style="display:none;">
+                          <label for="field_z_variable_file">Z-Variable Field File:</label>
+                          <input type="file" id="field_z_variable_file" name="field_z_variable_file">
+                        </div>
+                        
+                        <div class="form-group" id="non_uniform_field_group" style="display:none;">
+                          <label for="field_non_uniform_file">Non-Uniform Field File:</label>
+                          <input type="file" id="field_non_uniform_file" name="field_non_uniform_file">
+                        </div>
+                      </fieldset>
+                    
+                      <fieldset>
+                        <legend>AC External Field</legend>
+                        <div class="form-group">
+                          <label for="flag_field_ac">FLAG_FIELD_AC:</label>
+                          <select id="flag_field_ac" name="flag_field_ac">
+                            <option value="0">No AC Field</option>
+                            <option value="1" >Constant</option>
+                            <option value="2">Z-Variable</option>
+                            <option value="3">Non-Uniform</option>
+                          </select>
+                        </div>
+                    
+                        <div class="form-group" id="ac_constant_field_group">
+                          <label for="hx_ac">hx (V/m):</label>
+                          <input type="number" id="hx_ac" name="hx_ac">
+                          <label for="hy_ac">hy (V/m):</label>
+                          <input type="number" id="hy_ac" name="hy_ac">
+                          <label for="hz_ac">hz (V/m):</label>
+                          <input type="number" id="hz_ac" name="hz_ac">
+                        </div>
+                    
+                        <div class="form-group" id="ac_z_variable_field_group" style="display:none;">
+                          <label for="ac_z_variable_file">AC Z-Variable Field File:</label>
+                          <input type="file" id="ac_z_variable_file" name="ac_z_variable_file">
+                        </div>
+                        
+                        <div class="form-group" id="ac_non_uniform_field_group" style="display:none;">
+                          <label for="ac_non_uniform_file">AC Non-Uniform Field File:</label>
+                          <input type="file" id="ac_non_uniform_file" name="ac_non_uniform_file">
+                        </div>
+                      </fieldset>
+                    
+                      <fieldset>
+                        <legend>Frequency</legend>
+                        <div class="form-group">
+                          <label for="flag_frequency">FLAG_FREQUENCY:</label>
+                          <select id="flag_frequency" name="flag_frequency">
+                            <option value="1" >1 (Constant)</option>
+                            <option value="2">2 (Z-Variable)</option>
+                            <option value="3">3 (Non-Uniform)</option>
+                          </select>
+                        </div>
+                    
+                        <div class="form-group" id="constant_frequency_group">
+                          <label for="frequency">Frequency:</label>
+                          <input type="number" id="frequency" name="frequency">
+                        </div>
+                    
+                        <div class="form-group" id="z_variable_frequency_group" style="display:none;">
+                          <label for="frequency_z_variable_file">Z-Variable Frequency File:</label>
+                          <input type="file" id="frequency_z_variable_file" name="frequency_z_variable_file">
+                        </div>
+                    
+                        <div class="form-group" id="non_uniform_frequency_group" style="display:none;">
+                          <label for="frequency_non_uniform_file">Non-Uniform Frequency File:</label>
+                          <input type="file" id="frequency_non_uniform_file" name="frequency_non_uniform_file">
+                        </div>
+                      </fieldset>
+                    
+                      <fieldset>
+                        <legend>Phase</legend>
+                        <div class="form-group">
+                          <label for="flag_phase">FLAG_PHASE:</label>
+                          <select id="flag_phase" name="flag_phase">
+                            <option value="1" >Constant</option>
+                            <option value="2">Z-Variable</option>
+                            <option value="3">Non-Uniform</option>
+                          </select>
+                        </div>
+                    
+                        <div class="form-group" id="constant_phase_group">
+                          <label for="fi_x">fi_x:</label>
+                          <input type="number" id="fi_x" name="fi_x">
+                          <label for="fi_y">fi_y:</label>
+                          <input type="number" id="fi_y" name="fi_y">
+                          <label for="fi_z">fi_z:</label>
+                          <input type="number" id="fi_z" name="fi_z">
+                        </div>
+                    
+                        <div class="form-group" id="z_variable_phase_group" style="display:none;">
+                          <label for="phase_z_variable_file">Z-Variable Phase File:</label>
+                          <input type="file" id="phase_z_variable_file" name="phase_z_variable_file">
+                        </div>
+                    
+                        <div class="form-group" id="non_uniform_phase_group" style="display:none;">
+                          <label for="phase_non_uniform_file">Non-Uniform Phase File:</label>
+                          <input type="file" id="phase_non_uniform_file" name="phase_non_uniform_file">
+                        </div>
+                      </fieldset>
+                    
+                      <fieldset>
+                        <legend>Pulse Field</legend>
+                        <div class="form-group">
+                          <label for="flag_field_pulse">FLAG_FIELD_PULSE:</label>
+                          <select id="flag_field_pulse" name="flag_field_pulse">
+                            <option value="0" >No</option>
+                            <option value="1">Yes</option>
+                          </select>
+                        </div>
+                    
+                        <div class="form-group" id="pulse_parameters_group" style="display:none;">
+                          <label for="nfield">nfield (int):</label>
+                          <input type="number" id="nfield" name="nfield">
+                          <label for="file_pulse">Pulse Data File (two columns):</label>
+                          <input type="file" id="file_pulse" name="file_pulse">
+                          <label for="h_theta_pulse">H_theta_pulse:</label>
+                          <input type="number" id="h_theta_pulse" name="h_theta_pulse">
+                          <label for="h_phi_pulse">H_phi_pulse:</label>
+                          <input type="number" id="h_phi_pulse" name="h_phi_pulse">
+                        </div>
+                      </fieldset>
+                      
+                      <button type="submit">Submit Configuration</button>
+                    </form>
+                    <script>
+                      document.addEventListener('DOMContentLoaded', function() {
+                        const flagFieldSelect = document.getElementById('flag_field');
+                        const inputTypeGroup = document.getElementById('input_type_group');
+                        const constantFieldSpherical = document.getElementById('constant_field_spherical');
+                        const constantFieldCartesian = document.getElementById('constant_field_cartesian');
+                        const zVariableFieldGroup = document.getElementById('z_variable_field_group');
+                        const nonUniformFieldGroup = document.getElementById('non_uniform_field_group');
+                    
+                        const flagFieldAcSelect = document.getElementById('flag_field_ac');
+                        const acConstantFieldGroup = document.getElementById('ac_constant_field_group');
+                        const acZVariableFieldGroup = document.getElementById('ac_z_variable_field_group');
+                        const acNonUniformFieldGroup = document.getElementById('ac_non_uniform_field_group');
+                    
+                        const flagFrequencySelect = document.getElementById('flag_frequency');
+                        const constantFrequencyGroup = document.getElementById('constant_frequency_group');
+                        const zVariableFrequencyGroup = document.getElementById('z_variable_frequency_group');
+                        const nonUniformFrequencyGroup = document.getElementById('non_uniform_frequency_group');
+                    
+                        const flagPhaseSelect = document.getElementById('flag_phase');
+                        const constantPhaseGroup = document.getElementById('constant_phase_group');
+                        const zVariablePhaseGroup = document.getElementById('z_variable_phase_group');
+                        const nonUniformPhaseGroup = document.getElementById('non_uniform_phase_group');
+                    
+                        const flagFieldPulseSelect = document.getElementById('flag_field_pulse');
+                        const pulseParametersGroup = document.getElementById('pulse_parameters_group');
+                    
+                        function updateVisibility() {
+                          const flagFieldValue = flagFieldSelect.value;
+                          inputTypeGroup.style.display = flagFieldValue === '1' ? 'block' : 'none';
+                          constantFieldSpherical.style.display = (flagFieldValue === '1' && document.getElementById('flag_input_type').value === '1') ? 'block' : 'none';
+                          constantFieldCartesian.style.display = (flagFieldValue === '1' && document.getElementById('flag_input_type').value === '2') ? 'block' : 'none';
+                          zVariableFieldGroup.style.display = flagFieldValue === '2' ? 'block' : 'none';
+                          nonUniformFieldGroup.style.display = flagFieldValue === '3' ? 'block' : 'none';
+                    
+                          const flagFieldAcValue = flagFieldAcSelect.value;
+                          acConstantFieldGroup.style.display = flagFieldAcValue === '1' ? 'block' : 'none';
+                          acZVariableFieldGroup.style.display = flagFieldAcValue === '2' ? 'block' : 'none';
+                          acNonUniformFieldGroup.style.display = flagFieldAcValue === '3' ? 'block' : 'none';
+                    
+                          const flagFrequencyValue = flagFrequencySelect.value;
+                          constantFrequencyGroup.style.display = flagFrequencyValue === '1' ? 'block' : 'none';
+                          zVariableFrequencyGroup.style.display = flagFrequencyValue === '2' ? 'block' : 'none';
+                          nonUniformFrequencyGroup.style.display = flagFrequencyValue === '3' ? 'block' : 'none';
+                    
+                          const flagPhaseValue = flagPhaseSelect.value;
+                          constantPhaseGroup.style.display = flagPhaseValue === '1' ? 'block' : 'none';
+                          zVariablePhaseGroup.style.display = flagPhaseValue === '2' ? 'block' : 'none';
+                          nonUniformPhaseGroup.style.display = flagPhaseValue === '3' ? 'block' : 'none';
+                    
+                          pulseParametersGroup.style.display = flagFieldPulseSelect.value === '1' ? 'block' : 'none';
+                        }
+                    
+                        flagFieldSelect.addEventListener('change', updateVisibility);
+                        flagFieldAcSelect.addEventListener('change', updateVisibility);
+                        flagFrequencySelect.addEventListener('change', updateVisibility);
+                        flagPhaseSelect.addEventListener('change', updateVisibility);
+                        flagFieldPulseSelect.addEventListener('change', updateVisibility);
+                        document.getElementById('flag_input_type').addEventListener('change', updateVisibility); // For dynamic constant field inputs
+                    
+                        updateVisibility(); // Initial call to set initial visibility
+                      });
+                    </script>
+
+                    <script>
+                        const rawData6 = document.getElementById("ferro-data6").dataset.geometry;
+                        const List_External_Field = JSON.parse(rawData6);
+
+                        document.getElementById("flag_field").value = List_External_Field[0];
+                        document.getElementById("flag_input_type").value = List_External_Field[1];
+                        document.getElementById("field_ext_spherical").value = List_External_Field[2];
+                        document.getElementById("h_theta").value = List_External_Field[3];
+                        document.getElementById("h_phi").value = List_External_Field[4];
+                        document.getElementById("h_x").value = List_External_Field[5];
+                        document.getElementById("h_y").value = List_External_Field[6];
+                        document.getElementById("h_z").value = List_External_Field[7];
+                        //document.getElementById("field_z_variable_file").value = List_External_Field[8];
+                        //document.getElementById("field_non_uniform_file").value = List_External_Field[9];
+                        document.getElementById("flag_field_ac").value = List_External_Field[10];
+                        document.getElementById("hx_ac").value = List_External_Field[11];
+                        document.getElementById("hy_ac").value = List_External_Field[12];
+                        document.getElementById("hz_ac").value = List_External_Field[13];
+                        //document.getElementById("ac_z_variable_file").value = List_External_Field[14];
+                        //document.getElementById("ac_non_uniform_file").value = List_External_Field[15];
+                        document.getElementById("flag_frequency").value = List_External_Field[16];
+                        document.getElementById("frequency").value = List_External_Field[17];
+                        //document.getElementById("z_variable_frequency_group").value = List_External_Field[18];
+                        //document.getElementById("non_uniform_frequency_group").value = List_External_Field[19];
+                        document.getElementById("flag_phase").value = List_External_Field[20];
+                        document.getElementById("fi_x").value = List_External_Field[21];
+                        document.getElementById("fi_y").value = List_External_Field[22];
+                        document.getElementById("fi_z").value = List_External_Field[23];
+                        //document.getElementById("z_variable_phase_group").value = List_External_Field[24];
+                        //document.getElementById("non_uniform_phase_group").value = List_External_Field[25];
+                        document.getElementById("flag_field_pulse").value = List_External_Field[26];
+                        document.getElementById("nfield").value = List_External_Field[27];
+                        //document.getElementById("file_pulse").value = List_External_Field[28];
+                        document.getElementById("h_theta_pulse").value = List_External_Field[29];
+                        document.getElementById("h_phi_pulse").value = List_External_Field[30];
+
+                    </script>
+                </form>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <div id="Strain_Field" class="tab-content">
+                <h3>Strain Field (External Excitation Parameters) (Later)</h3>
+                <form action="/Strain_Field" method="post" enctype="multipart/form-data">
+                    <label for="label">don't have any information yet</label>
+                    <button type="submit">Submit Configuration</button>
+                </form>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <div id="Electrostatic_Field_Parameters" class="tab-content">
+
+                <div id="ferro-data8" data-geometry='{{ List_Electrostatic | tojson | safe }}'></div>
+                
+                <h3>Electrostatic Field Parameters</h3>
+                <form action="/Electrostatic_Field_Parameters" method="post" enctype="multipart/form-data">
+
+                    <input type="hidden" name="project_path" value="{{ project_path }}">
+
+                    <fieldset>
+                        <legend>Tensor Options</legend>
+                        <div class="form-group">
+                            <label for="flagTensor">FLAG_TENSOR:</label>
+                            <select id="flagTensor" name="FLAG_TENSOR">
+                                <option value="0">magnetostatic field = 0</option>
+                                <option value="1">Demag Tensor computed in CPU (long double)</option>
+                                <option value="2">Demag Tensor computed in GPU (double)</option>
+                                <option value="3">THIN-FILM approximation</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="dx">Dx:</label>
+                            <input type="number" id="dx" name="Dx">
+                        </div>
+                        <div class="form-group">
+                            <label for="dy">Dy:</label>
+                            <input type="number" id="dy" name="Dy">
+                        </div>
+                        <div class="form-group">
+                            <label for="dz">Dz:</label>
+                            <input type="number" id="dz" name="Dz">
+                        </div>
+                    </fieldset>
+            
+                    <fieldset>
+                        <legend>Padding Options</legend>
+                        <div class="form-group">
+                            <label for="flagPadding">FLAG_PADDING:</label>
+                            <select id="flagPadding" name="FLAG_PADDING">
+                                <option value="0">Software computation (init())</option>
+                                <option value="1">Manual computation</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="padCx">Pad_cx:</label>
+                            <input type="number" id="padCx" name="Pad_cx">
+                        </div>
+                        <div class="form-group">
+                            <label for="padCy">Pad_cy:</label>
+                            <input type="number" id="padCy" name="Pad_cy">
+                        </div>
+                        <div class="form-group">
+                            <label for="padCz">Pad_cz:</label>
+                            <input type="number" id="padCz" name="Pad_cz">
+                        </div>
+                    </fieldset>
+            
+                    <fieldset>
+                        <legend>Load Configuration File (Optional)</legend>
+                        <div class="form-group">
+                            <label for="configFile">Select Configuration File:</label>
+                            <input type="file" id="configFile" name="configFile">
+                            <p style="font-size: 0.8em; color: #777;">You can optionally upload a configuration file to pre-fill the form.</p>
+                        </div>
+                    </fieldset>
+            
+                    <button type="submit">Submit Configuration</button>
+                </form>
+            
+                <script>
+                    document.getElementById('configForm').addEventListener('submit', function(event) {
+                        event.preventDefault(); // Prevent default form submission
+                        const formData = new FormData(this);
+                        const config = {};
+                        for (const [name, value] of formData) {
+                            config[name] = value;
+                        }
+                        console.log('Configuration Data:', config);
+                        // Here you would typically send this 'config' data to your backend
+                        // or use it to perform some action in the browser.
+                        alert('Configuration submitted! Check the console for the data.');
+                    });
+            
+                    document.getElementById('configFile').addEventListener('change', function(event) {
+                        const file = event.target.files[0];
+                        if (file) {
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                                const contents = e.target.result;
+                                // Basic parsing logic - you might need more robust parsing
+                                const lines = contents.split('\n').filter(line => !line.startsWith('!') && line.trim() !== '' && !line.startsWith('----'));
+                                if (lines.length >= 7) {
+                                    document.getElementById('flagTensor').value = lines[0].trim();
+                                    document.getElementById('dx').value = lines[1].trim();
+                                    document.getElementById('dy').value = lines[2].trim();
+                                    document.getElementById('dz').value = lines[3].trim();
+                                    document.getElementById('flagPadding').value = lines[4].trim();
+                                    document.getElementById('padCx').value = lines[5].trim();
+                                    document.getElementById('padCy').value = lines[6].trim();
+                                    if (lines.length >= 8) {
+                                        document.getElementById('padCz').value = lines[7].trim();
+                                    }
+                                    alert('Configuration file loaded into the form.');
+                                } else {
+                                    alert('Invalid configuration file format.');
+                                }
+                            };
+                            reader.readAsText(file);
+                        }
+                    });
+                </script>         
+                
+                
+                <script>
+                    const rawData8 = document.getElementById("ferro-data8").dataset.geometry;
+                    const List_Electrostatic = JSON.parse(rawData8);
+
+                    document.getElementById("flagTensor").value = List_Electrostatic[0];
+                    document.getElementById("dx").value = List_Electrostatic[1];
+                    document.getElementById("dy").value = List_Electrostatic[2];
+                    document.getElementById("dz").value = List_Electrostatic[3];
+                    document.getElementById("flagPadding").value = List_Electrostatic[4];
+                    document.getElementById("padCx").value = List_Electrostatic[5];
+                    document.getElementById("padCy").value = List_Electrostatic[6];
+                    document.getElementById("padCz").value = List_Electrostatic[7];
+
+                </script>
+
+                </form>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <div id="Elastic_Field_Parameters" class="tab-content">
+                <h3>Elastic Field Parameters (Later)</h3>
+                <form action="/Elastic_Field_Parameters" method="post" enctype="multipart/form-data">
+                    <label for="label">don't have any information yet</label>
+                    <button type="submit">Submit Configuration</button>
+                </form>
+            </div>
+
+
+
+
+
+
+
+            
+
+
+
+
+
+
+
+            <div id="Output_Settings" class="tab-content">
+                <h3>Output Settings (Later)</h3>
+                <form action="/Output_Settings" method="post" enctype="multipart/form-data">
+                    <label for="label">don't have any information yet</label>
+                    <button type="submit">Submit Configuration</button>
+                </form>
+
+            </div>
+
+
+
+
+
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabLinks = document.querySelectorAll('.tab-link');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabLinks.forEach(function(link) {
+                link.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+
+                    tabContents.forEach(function(content) {
+                        content.classList.remove('active');
+                    });
+
+                    tabLinks.forEach(function(tab) {
+                        tab.classList.remove('active');
+                    });
+
+                    document.getElementById(targetId).classList.add('active');
+                    this.classList.add('active');
+                });
+            });
+        });
+    </script>
+
+
+
+
+<div class="theme-toggle-container">
+    <button id="theme-toggle" class="theme-toggle-button">🌙</button>
+</div>
+
+<button id="scrollToTopBtn" class="scroll-to-top-button">⇧</button>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+        const isDarkMode = localStorage.getItem('darkMode') === 'enabled';
+        const scrollToTopBtn = document.getElementById("scrollToTopBtn");
+
+        if (isDarkMode) {
+            body.classList.add('dark-mode');
+            themeToggle.textContent = '☀️';
+        }
+
+        themeToggle.addEventListener('click', function() {
+            body.classList.toggle('dark-mode');
+            const isDarkModeActive = body.classList.contains('dark-mode');
+            themeToggle.textContent = isDarkModeActive ? '☀️' : '🌙';
+            localStorage.setItem('darkMode', isDarkModeActive ? 'enabled' : 'disabled');
+        });
+
+        // Show/hide the button based on scroll position
+        window.onscroll = function() {scrollFunction()};
+
+        function scrollFunction() {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                scrollToTopBtn.style.display = "block";
+            } else {
+                scrollToTopBtn.style.display = "none";
+            }
+        }
+
+        // Function to scroll to the top
+        scrollToTopBtn.addEventListener('click', function() {
+            document.body.scrollTop = 0; // For Safari
+            document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+        });
+    });
+</script>
+</body>
+</html>

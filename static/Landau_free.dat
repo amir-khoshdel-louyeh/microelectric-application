@@ -1,0 +1,99 @@
+//Landau Free parameters
+1                               !FLAG_LANDAU  0, 1 (int)  
+0                               !FLAG_NOISE  0, 1, 2                         
+2				!FLAG_ALPHA0  1, 2, 3 (int)
+3.8e5				!(C-1m2N) alpha0_constant 
+alpha0_z_variable.dat           !nome del file 
+alpha0_Non_Uniform.dat 		!nome del file 
+2				!FLAG_ALPHA2  1, 2, 3 (int)
+-7.3e7				!(C-4m6N) alpha2_constant 
+alpha2_z_variable.dat           !nome del file 
+alpha2_Non_Uniform.dat 		!nome del file
+2				!FLAG_ALPHA3  1, 2, 3 (int)
+7.5e8				!(C-4m6N) alpha3_constant 
+alpha3_z_variable.dat           !nome del file 
+alpha3_Non_Uniform.dat 		!nome del file
+2				!FLAG_ALPHA4  1, 2, 3 (int)
+2.6e8				!(C-6m10N) alpha4_constant 
+alpha4_z_variable.dat           !nome del file 
+alpha4_Non_Uniform.dat 		!nome del file
+2				!FLAG_ALPHA5  1, 2, 3 (int)
+6.1e8				!(C-6m10N) alpha5_constant 
+alpha5_z_variable.dat           !nome del file 
+alpha5_Non_Uniform.dat 		!nome del file
+2				!FLAG_ALPHA6  1, 2, 3 (int)
+-3.7e9				!(C-6m10N) alpha6_constant 
+alpha6_z_variable.dat           !nome del file 
+alpha6_Non_Uniform.dat 		!nome del file
+0.0e0				!(C/m2) reference_polarization_x
+0.0e0				!(C/m2) reference_polarization_y
+0.757e0				!(C/m2) reference_polarization_z
+1.7176e8			!(C-2m2N) alpha1_reference constant to normalize 
+2                               !FLAG_SUSCIPTIBILITY_WEIGHTS   1, 2, 3 (int)
+1.0                             !susiptibilityWeight value
+susciptibilityWeights_z_variable.dat       !nome del file
+susciptibilityWeights_non_uniform.dat      !nome del file
+1				!FLAG_TEMPERATURE  1, 2, 3 (int)
+300.0e0				!(K) temperature value
+temperature_z_variable.dat      !nome del file
+temperature_non_uniform.dat      !nome del file
+1				!FLAG_TRANSITION_TEMP  1, 2, 3 (int)
+752.0e0				!(K) transition temperature  value
+transitionTemp_z_variable.dat   !nome del file
+transitionTemp_non_uniform.dat   !nome del file
+2				!FLAG_RELAXATION  1, 2, 3 (int)
+1.0				!(s-1m-2C2N-1) relaxation coefficient  value
+relaxation_z_variable.dat       !nome del file
+relaxation_non_uniform.dat      !nome del file
+1.0e-7				!(s-1m-2C2N-1) reference relaxation coefficient 
+
+
+----COMMENT----
+Currently only Flag 1 is working.
+FLAG_LANDAU
+0 -->	 Landau free field not calculated;
+1 -->    Landau free field calculated;
+FLAG_NOISE
+0 -->	 Random noise is not included;
+1 -->    Random noise is included;
+FLAG_ALPHA0
+1 -->	 alpha0 has a single constant value;
+2 -->    alpha0 change values along z_layer, input from file;
+3 -->    alpha0 has entirely non_uniform values, input from file;
+FLAG_ALPHA2
+1 -->	 alpha2 has a single constant value;
+2 -->    alpha2 change values along z_layer, input from file;
+3 -->    alpha2 has entirely non_uniform values, input from file;
+FLAG_ALPHA3
+1 -->	 alpha3 has a single constant value;
+2 -->    alpha3 change values along z_layer, input from file;
+3 -->    alpha3 has entirely non_uniform values, input from file;
+FLAG_ALPHA4
+1 -->	 alpha4 has a single constant value;
+2 -->    alpha4 change values along z_layer, input from file;
+3 -->    alpha4 has entirely non_uniform values, input from file;
+FLAG_ALPHA5
+1 -->	 alpha5 has a single constant value;
+2 -->    alpha5 change values along z_layer, input from file;
+3 -->    alpha5 has entirely non_uniform values, input from file;
+FLAG_ALPHA6
+1 -->	 alpha6 has a single constant value;
+2 -->    alpha6 change values along z_layer, input from file;
+3 -->    alpha6 has entirely non_uniform values input from file;
+FLAG_TEPERATURE
+1 -->	 temperature has a single constant value;
+2 -->    temperature change values along z_layer, input from file;
+3 -->    temperature has entirely non_uniform values input from file;
+FLAG_RELAXATION
+1 -->	 coefficient related to domain wall mobolity has a single constant value;
+2 -->    coefficient related to domain wall mobolity has a change values along z_layer, input from file;
+3 -->    coefficient related to domain wall mobolity has a has entirely non_uniform values input from file;
+
+	
+
+
+
+
+----ENDCOMMENT----
+
+
