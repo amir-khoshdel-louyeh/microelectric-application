@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Open project</title>
+    <link rel="stylesheet" href="style.css"> </head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='style_icon.ico') }}" type="image/x-icon">
+
+
+</head>
+<body>
+    <h1>Please Complete The Form:</h1>
+    <form action="/open_project_submit" method="post" enctype="multipart/form-data">
+        <label for="P_Folder">Insert The Project Location To Open The Project Folder:</label>
+            <input type="text" id="P_Folder" name="P_Folder" style="flex-grow: 1; margin-right: 5px;" required>
+            <button type="button" class="button-link">Browse</button>
+        <br>
+
+        <button type="submit" >Submit Project</button>
+    </form>
+    <script>
+        const browseButton = document.querySelector('button[type="button"]');
+        const folderInput = document.getElementById('P_Folder');
+        browseButton.addEventListener('click', function() {
+            const hiddenFileInput = document.createElement('input');
+            hiddenFileInput.type = 'file';
+            hiddenFileInput.webkitdirectory = true; // For Chrome/Edge
+            hiddenFileInput.style.display = 'none';
+            document.body.appendChild(hiddenFileInput);
+    
+            hiddenFileInput.addEventListener('change', function(event) {
+                if (event.target.files.length > 0) {
+                    // const path = event.target.files[0].webkitRelativePath.split('/')[0];
+                    // folderInput.value = path; // Removed this line to prevent displaying the path
+                    document.body.removeChild(hiddenFileInput);
+    
+                    // You can add code here to do something else with the selected folder,
+                    // like storing it in a JavaScript variable or triggering another action.
+                    const selectedFolderPath = event.target.files[0].webkitRelativePath.split('/')[0];
+                    console.log("Selected folder:", selectedFolderPath); // Example: Log the selected path
+                }
+            });
+    
+            hiddenFileInput.click();
+        });
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="theme-toggle-container">
+  <button id="theme-toggle" class="theme-toggle-button">🌙</button>
+</div>
+
+<button id="scrollToTopBtn" class="scroll-to-top-button">⇧</button>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      const themeToggle = document.getElementById('theme-toggle');
+      const body = document.body;
+      const isDarkMode = localStorage.getItem('darkMode') === 'enabled';
+      const scrollToTopBtn = document.getElementById("scrollToTopBtn");
+
+      if (isDarkMode) {
+          body.classList.add('dark-mode');
+          themeToggle.textContent = '☀️';
+      }
+
+      themeToggle.addEventListener('click', function() {
+          body.classList.toggle('dark-mode');
+          const isDarkModeActive = body.classList.contains('dark-mode');
+          themeToggle.textContent = isDarkModeActive ? '☀️' : '🌙';
+          localStorage.setItem('darkMode', isDarkModeActive ? 'enabled' : 'disabled');
+      });
+
+      // Show/hide the button based on scroll position
+      window.onscroll = function() {scrollFunction()};
+
+      function scrollFunction() {
+          if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+              scrollToTopBtn.style.display = "block";
+          } else {
+              scrollToTopBtn.style.display = "none";
+          }
+      }
+
+      // Function to scroll to the top
+      scrollToTopBtn.addEventListener('click', function() {
+          document.body.scrollTop = 0; // For Safari
+          document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+      });
+  });
+</script>
+</body>
+</html>
