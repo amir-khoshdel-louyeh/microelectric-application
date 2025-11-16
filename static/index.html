@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Index Page</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='style_icon.ico') }}" type="image/x-icon">
+  
+    
+</head>
+<body>
+    <h1>Please Choose:</h1>
+    <br>
+    <form action="/" method="post" enctype="multipart/form-data">
+        <fieldset>
+            <br>
+        <a href="/new_project" class="button-link"><br>New Project<br><br></a>
+        <a href="/open_project" class="button-link"><br>Open Project<br><br></a>
+        <br><br>
+        </fieldset>
+    </form>
+
+    <div class="theme-toggle-container">
+      <button id="theme-toggle" class="theme-toggle-button">🌙</button>
+    </div>
+  
+    <button id="scrollToTopBtn" class="scroll-to-top-button">⇧</button>
+  
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+
+            // Theme toggle functionality
+            const themeToggle = document.getElementById('theme-toggle');
+            const body = document.body;
+            const isDarkMode = localStorage.getItem('darkMode') === 'enabled';
+            const scrollToTopBtn = document.getElementById("scrollToTopBtn");
+
+            if (isDarkMode) {
+                body.classList.add('dark-mode');
+                themeToggle.textContent = '☀️';
+            }
+
+            themeToggle.addEventListener('click', function() {
+                body.classList.toggle('dark-mode');
+                const isDarkModeActive = body.classList.contains('dark-mode');
+                themeToggle.textContent = isDarkModeActive ? '☀️' : '🌙';
+                localStorage.setItem('darkMode', isDarkModeActive ? 'enabled' : 'disabled');
+            });
+
+            // Show/hide the button based on scroll position
+            window.onscroll = function() {scrollFunction()};
+
+            function scrollFunction() {
+                if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                    scrollToTopBtn.style.display = "block";
+                } else {
+                    scrollToTopBtn.style.display = "none";
+                }
+            }
+
+            // Function to scroll to the top
+            scrollToTopBtn.addEventListener('click', function() {
+                document.body.scrollTop = 0; // For Safari
+                document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE, and Opera
+            });
+        });
+    </script>
+</body>
+</html>
