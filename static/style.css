@@ -1,0 +1,474 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 30px auto;
+    background-color: #f9f8f6;
+    color: #3a3a3a;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 950px;
+    padding: 30px;
+    box-sizing: border-box;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+body.dark-mode {
+    background-color: #1e1e1e;
+    color: #f0f0f0;
+    border-color: #333;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+h1, h2 {
+    text-align: center;
+    color: #3a3a3a;
+    width: 100%;
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e0e0e0;
+    transition: color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Add a subtle accent color to headings */
+h1, h2 {
+    border-bottom-color: #a7c957; /* Soft olive green */
+}
+
+.dark-mode h1, .dark-mode h2 {
+    color: #f0f0f0;
+    border-bottom-color: #8ac926; /* Brighter lime green in dark mode */
+}
+
+h3 {
+    text-align: center;
+    color: #777;
+    margin-bottom: 20px;
+    margin-top: 0;
+    transition: color 0.3s ease;
+}
+
+.dark-mode h3 {
+    color: #ccc;
+}
+
+fieldset {
+    margin-bottom: 25px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dark-mode fieldset {
+    background-color: #333;
+    border-color: #555;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+legend {
+    font-weight: bold;
+    padding: 8px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    color: #555;
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+/* Add a subtle accent to the legend */
+legend {
+    background-color: #d4f1f4; /* Light cyan */
+    border-color: #8ac926; /* Lime green */
+    color: #333;
+}
+
+.dark-mode legend {
+    background-color: #52b69a; /* Teal in dark mode */
+    border-color: #a7c957; /* Olive green in dark mode */
+    color: #eee;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #555;
+    transition: color 0.3s ease;
+}
+
+.dark-mode label {
+    color: #eee;
+}
+
+input[type="number"],
+input[type="text"],
+input[type="file"],
+select {
+    width: calc(100% - 20px);
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+    background-color: #fff;
+    color: #333;
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+/* Subtle border accent for inputs */
+input[type="number"],
+input[type="text"],
+input[type="file"],
+select {
+    border-color: #8ac926; /* Lime green */
+}
+
+.dark-mode input[type="number"],
+.dark-mode input[type="text"],
+.dark-mode input[type="file"],
+.dark-mode select {
+    background-color: #444;
+    color: #f0f0f0;
+    border-color: #a7c957; /* Olive green in dark mode */
+}
+
+.unit {
+    margin-left: 8px;
+    color: #777;
+    font-size: 0.9em;
+    transition: color 0.3s ease;
+}
+
+.dark-mode .unit {
+    color: #ccc;
+}
+
+button[type="submit"] {
+    background-color: #0056b3;
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+/* Slightly different button color */
+button[type="submit"] {
+    background-color: #52b69a; /* Teal */
+}
+
+button[type="submit"]:hover {
+    background-color: #34a0a4; /* Darker teal */
+    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.2);
+}
+
+.conditional {
+    margin-top: 15px;
+    padding-left: 25px;
+    border-left: 2px solid #eee;
+    transition: border-color 0.3s ease;
+}
+
+/* Accent color for conditional border */
+.conditional {
+    border-left-color: #f4a261; /* Sandy brown */
+}
+
+.dark-mode .conditional {
+    border-left-color: #e76f51; /* Burnt orange in dark mode */
+}
+
+.form-text {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.9em;
+    color: #6c757d;
+    transition: color 0.3s ease;
+}
+
+.dark-mode .form-text {
+    color: #bbb;
+}
+
+.tab-container {
+    display: flex;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin-top: 30px;
+    border: 1px solid #ddd;
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Accent color for tab container border */
+.tab-container {
+    border-color: #a7c957; /* Olive green */
+}
+
+.dark-mode .tab-container {
+    background-color: #333;
+    border-color: #8ac926; /* Lime green in dark mode */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+.tab-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 250px;
+    background-color: #f9f9f9;
+    border-right: 1px solid #ddd;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Accent color for tab list border */
+.tab-list {
+    border-right-color: #8ac926; /* Lime green */
+}
+
+.dark-mode .tab-list {
+    background-color: #444;
+    border-right-color: #a7c957; /* Olive green in dark mode */
+}
+
+.tab-list li a {
+    display: block;
+    padding: 15px 20px;
+    text-decoration: none;
+    color: #444;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.2s ease, color 0.3s ease, border-bottom-color 0.3s ease;
+}
+
+.dark-mode .tab-list li a {
+    color: #ccc;
+    border-bottom-color: #666;
+}
+
+.tab-list li:last-child a {
+    border-bottom: none;
+}
+
+.tab-list li a:hover {
+    background-color: #eee;
+}
+
+.dark-mode .tab-list li a:hover {
+    background-color: #555;
+}
+
+.tab-list li a.active {
+    background-color: #fff;
+    color: #0056b3;
+    font-weight: bold;
+    border-right: 4px solid #0056b3;
+}
+
+/* Accent color for active tab */
+.tab-list li a.active {
+    color: #f4a261; /* Sandy brown */
+    border-right-color: #f4a261;
+}
+
+.dark-mode .tab-list li a.active {
+    background-color: #444;
+    color: #e76f51; /* Burnt orange in dark mode */
+    border-right-color: #e76f51;
+}
+
+.tab-content-wrapper {
+    flex-grow: 1;
+    padding: 25px;
+    transition: background-color 0.3s ease;
+}
+
+.dark-mode .tab-content-wrapper {
+    background-color: #333;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.tab-content p {
+    color: #777;
+    font-style: italic;
+    transition: color 0.3s ease;
+}
+
+.dark-mode .tab-content p {
+    color: #bbb;
+}
+
+form {
+    padding: 25px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 510px;
+    align-items: flex-start;
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Accent color for form border */
+form {
+    border-color: #8ac926; /* Lime green */
+}
+
+.dark-mode form {
+    background-color: #333;
+    border-color: #a7c957; /* Olive green in dark mode */
+    color: #f0f0f0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+form button[type="submit"] {
+    align-self: center;
+    padding: 15px 30px;
+    font-size: 1.1em;
+}
+
+.button-link {
+    background-color: #e9e9e9;
+    color: #3a3a3a;
+    border: 1px solid #ccc;
+    padding: 12px 25px;
+    margin: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1em;
+    text-decoration: none;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    display: inline-block;
+    min-width: 160px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    background-color: #f4a261; /* Sandy brown */
+    color: white;
+    border-color: #f4a261;
+}
+
+.dark-mode .button-link {
+    background-color: #e76f51; /* Burnt orange in dark mode */
+    color: white;
+    border-color: #e76f51;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.button-link:hover {
+    background-color: #e08a49; /* Darker sandy brown */
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.dark-mode .button-link:hover {
+    background-color: #d2543d; /* Darker burnt orange in dark mode */
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Dark/Light Mode Button Styles */
+.theme-toggle-container {
+    position: fixed;
+    top: 30px;
+    right: 30px;
+}
+
+.theme-toggle-button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-size: 1.8em;
+    color: #555;
+    transition: color 0.3s ease;
+}
+
+.dark-mode .theme-toggle-button {
+    color: #f0f0f0;
+}
+
+
+/* Styles for the scroll-to-top button */
+.scroll-to-top-button {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    bottom: 20px;
+    right: 20px;
+    z-index: 99; /* Ensure it's on top of other elements */
+    border: none;
+    outline: none;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+    color: white;
+    cursor: pointer;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 1em;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+}
+
+.scroll-to-top-button:hover {
+    opacity: 1;
+}
+
+.dark-mode .scroll-to-top-button {
+    background-color: rgba(255, 255, 255, 0.3);
+    color: #333;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.message-box {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    font-weight: bold;
+    border: 1px solid;
+}
+
+.message-success {
+    background-color: #dfd;
+    border-color: #4CAF50;
+    color: #155724;
+}
+
+.message-error {
+    background-color: #fdd;
+    border-color: #f44336;
+    color: #a94442;
+}
