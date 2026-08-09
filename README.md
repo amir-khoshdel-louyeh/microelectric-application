@@ -249,7 +249,7 @@ microelectric-application/
 3. **Install Dependencies**
 
    ```bash
-   pip install flask pyinstaller
+   pip install -r requirements.txt
    ```
 
 ### Running the Application
