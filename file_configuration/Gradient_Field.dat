@@ -1,0 +1,8 @@
+# Gradient Energy Field Configuration Parameters
+# Interfacial gradient coefficients governing domain wall energy (in J*m^3/C^2)
+
+G11 = 2.0e-10
+G12 = 0.0
+G44 = 1.0e-10
+G44_prime = 1.0e-10
+domain_wall_thickness = 1.5
