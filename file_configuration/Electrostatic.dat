@@ -1,0 +1,12 @@
+# Electrostatic Configuration Parameters
+# Dielectric permittivity and electric field boundary parameters
+
+vacuum_permittivity = 8.854e-12
+relative_permittivity_xx = 100.0
+relative_permittivity_yy = 100.0
+relative_permittivity_zz = 130.0
+
+# Boundary condition settings: 0 = short circuit, 1 = open circuit
+boundary_condition_top = 0
+boundary_condition_bottom = 0
+background_dielectric_constant = 10.0
