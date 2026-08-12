@@ -1,0 +1,16 @@
+# Ferroelectric Domain Geometry Parameters
+# 3D spatial discretization grid dimensions and mesh parameters
+
+Nx = 64
+Ny = 64
+Nz = 32
+
+# Mesh spacing in nanometers (nm)
+dx = 1.0
+dy = 1.0
+dz = 1.0
+
+# Substrate strain boundary parameters
+substrate_misfit_strain_xx = -0.005
+substrate_misfit_strain_yy = -0.005
+substrate_clamping = 1
