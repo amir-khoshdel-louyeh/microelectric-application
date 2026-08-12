@@ -1,0 +1,15 @@
+# Landau Free Energy Configuration Parameters
+# Scientific unit definitions: Alpha coefficients in J*m/C^2, Temperature in Kelvin
+
+# Bulk Landau-Devonshire energy expansion coefficients
+alpha1 = -1.25e8
+alpha11 = -2.1e8
+alpha12 = 7.5e8
+alpha111 = 2.6e9
+alpha112 = 6.1e8
+alpha123 = -3.7e9
+
+# Temperature parameters
+Temperature = 298.15
+Curie_Temperature = 652.0
+Curie_Constant = 1.5e5
