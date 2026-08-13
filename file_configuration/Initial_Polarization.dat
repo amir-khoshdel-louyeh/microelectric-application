@@ -1,0 +1,10 @@
+# Initial Polarization State Configuration
+# Polarization vector matrix initialization parameters (C/m^2)
+
+initialization_mode = random_noise
+spontaneous_polarization = 0.75
+noise_amplitude = 0.05
+initial_Px = 0.0
+initial_Py = 0.0
+initial_Pz = 0.75
+seed_vortex = 0
