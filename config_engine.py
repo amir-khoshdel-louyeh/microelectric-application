@@ -63,3 +63,40 @@ class ConfigEngine:
                 else:
                     val_str = str(val)
                 f.write(f"{key} = {val_str}\n")
+
+    @staticmethod
+    def create_project_workspace(project_path: str) -> Dict[str, Dict[str, Any]]:
+        """Initialize a new project directory and copy default .dat templates into it."""
+        os.makedirs(project_path, exist_ok=True)
+        config_data = {}
+        for filename in CONFIG_FILES:
+            dest_path = os.path.join(project_path, filename)
+            src_path = os.path.join(TEMPLATE_DIR, filename)
+            if os.path.exists(src_path) and not os.path.exists(dest_path):
+                shutil.copy(src_path, dest_path)
+            # Parse configured file
+            category = filename.replace('.dat', '')
+            config_data[category] = ConfigEngine.parse_dat_file(dest_path)
+        return config_data
+
+    @staticmethod
+    def load_project_workspace(project_path: str) -> Dict[str, Dict[str, Any]]:
+        """Load an existing project directory and parse all available .dat configuration files."""
+        config_data = {}
+        if not os.path.exists(project_path):
+            return config_data
+
+        for filename in CONFIG_FILES:
+            file_path = os.path.join(project_path, filename)
+            category = filename.replace('.dat', '')
+            if os.path.exists(file_path):
+                config_data[category] = ConfigEngine.parse_dat_file(file_path)
+            else:
+                # If missing, fall back to template default
+                src_path = os.path.join(TEMPLATE_DIR, filename)
+                if os.path.exists(src_path):
+                    config_data[category] = ConfigEngine.parse_dat_file(src_path)
+                else:
+                    config_data[category] = {}
+        return config_data
+
