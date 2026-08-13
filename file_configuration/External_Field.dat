@@ -1,0 +1,10 @@
+# External Electric Field Configuration
+# Applied electric field parameters (in kV/cm)
+
+Ex = 0.0
+Ey = 0.0
+Ez = 100.0
+waveform_type = DC
+frequency_hz = 1000.0
+pulse_duration_ns = 50.0
+ramp_time_ns = 5.0
