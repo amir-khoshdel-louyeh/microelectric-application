@@ -100,3 +100,45 @@ class ConfigEngine:
                     config_data[category] = {}
         return config_data
 
+    @staticmethod
+    def validate_parameters(config_data: Dict[str, Dict[str, Any]]) -> Dict[str, List[str]]:
+        """Run physical parameter sanity checks across all loaded dataset modules."""
+        errors = []
+        warnings = []
+
+        # Check Ferro Geometry bounds
+        fg = config_data.get('Ferro_Geometry', {})
+        for dim in ('Nx', 'Ny', 'Nz'):
+            val = fg.get(dim)
+            if val is not None and (not isinstance(val, int) or val <= 0):
+                errors.append(f"Grid dimension '{dim}' must be a positive integer (got {val}).")
+
+        for spacing in ('dx', 'dy', 'dz'):
+            val = fg.get(spacing)
+            if val is not None and (not isinstance(val, (int, float)) or val <= 0):
+                errors.append(f"Grid spacing '{spacing}' must be a positive number (got {val}).")
+
+        # Check Electrostatics
+        el = config_data.get('Electrostatic', {})
+        vac_p = el.get('vacuum_permittivity')
+        if vac_p is not None and (not isinstance(vac_p, (int, float)) or vac_p <= 0):
+            warnings.append("Vacuum permittivity should be a positive physical constant (~8.854e-12).")
+
+        for rel in ('relative_permittivity_xx', 'relative_permittivity_yy', 'relative_permittivity_zz'):
+            val = el.get(rel)
+            if val is not None and (not isinstance(val, (int, float)) or val <= 0):
+                errors.append(f"Relative permittivity '{rel}' must be positive (got {val}).")
+
+        # Check Temperature in Landau Free Energy
+        lf = config_data.get('Landau_Free', {})
+        temp = lf.get('Temperature')
+        if temp is not None and (not isinstance(temp, (int, float)) or temp < 0):
+            errors.append(f"Temperature must be non-negative in Kelvin (got {temp}).")
+
+        return {
+            'valid': len(errors) == 0,
+            'errors': errors,
+            'warnings': warnings
+        }
+
+
