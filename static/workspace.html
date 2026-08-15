@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microelectric Simulation Workspace</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='style_icon.ico') }}" type="image/x-icon">
+</head>
+<body>
+
+    <div class="workspace-header">
+        <div class="header-titles">
+            <h1>Microelectric Simulation Workspace</h1>
+            <p class="project-path-display">📁 Active Workspace: <span id="active-path">{{ project_path }}</span></p>
+        </div>
+        <div class="header-actions">
+            <button id="save-btn" class="btn btn-primary">💾 Save All Configs</button>
+            <a href="/api/export?path={{ project_path }}" class="btn btn-secondary">📦 Export ZIP</a>
+            <a href="/" class="btn btn-outline">🏠 Home</a>
+        </div>
+    </div>
+
+    <!-- Toast Notification Banner -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Validation Status Banner -->
+    <div id="validation-banner" class="validation-banner {% if not validation.valid %}validation-invalid{% else %}validation-valid{% endif %}">
+        <span id="validation-icon">{% if not validation.valid %}⚠️{% else %}✅{% endif %}</span>
+        <span id="validation-text">
+            {% if not validation.valid %}
+                Validation Errors Detected: {{ validation.errors | join('; ') }}
+            {% else %}
+                All physical parameters are valid and ready for simulation.
+            {% endif %}
+        </span>
+    </div>
+
+    <div class="workspace-container">
+        <!-- Sidebar Navigation Tabs -->
+        <ul class="workspace-tabs" id="workspace-tabs">
+            <li class="tab-item active" data-tab="landau"><span class="tab-icon">⚡</span> Landau Free Energy</li>
+            <li class="tab-item" data-tab="electrostatic"><span class="tab-icon">🔌</span> Electrostatics</li>
+            <li class="tab-item" data-tab="geometry"><span class="tab-icon">📐</span> Ferro Geometry</li>
+            <li class="tab-item" data-tab="gradient"><span class="tab-icon">🌊</span> Gradient Field</li>
+            <li class="tab-item" data-tab="polarization"><span class="tab-icon">🧲</span> Initial Polarization</li>
+            <li class="tab-item" data-tab="external"><span class="tab-icon">⚡</span> External Field</li>
+            <li class="tab-item" data-tab="visualizer"><span class="tab-icon">📊</span> Interactive Visualizer</li>
+            <li class="tab-item" data-tab="raw"><span class="tab-icon">📝</span> Raw .dat Preview</li>
+        </ul>
+
+        <!-- Main Tab Content Area -->
+        <div class="workspace-content">
+
+            <!-- 1. Landau Free Energy -->
+            <div class="tab-panel active" id="panel-landau">
+                <h2>Landau-Devonshire Free Energy Expansion</h2>
+                <p class="subtitle">Configure bulk energy expansion coefficients and temperature dependence.</p>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="lf-alpha1">alpha1 <span class="unit">(J·m/C²)</span></label>
+                        <input type="number" step="any" id="lf-alpha1" data-cat="Landau_Free" data-key="alpha1" value="{{ config_data.get('Landau_Free', {}).get('alpha1', -1.25e8) }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="lf-alpha11">alpha11 <span class="unit">(J·m/C²)</span></label>
+                        <input type="number" step="any" id="lf-alpha11" data-cat="Landau_Free" data-key="alpha11" value="{{ config_data.get('Landau_Free', {}).get('alpha11', -2.1e8) }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="lf-alpha12">alpha12 <span class="unit">(J·m/C²)</span></label>
+                        <input type="number" step="any" id="lf-alpha12" data-cat="Landau_Free" data-key="alpha12" value="{{ config_data.get('Landau_Free', {}).get('alpha12', 7.5e8) }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="lf-alpha111">alpha111 <span class="unit">(J·m/C²)</span></label>
+                        <input type="number" step="any" id="lf-alpha111" data-cat="Landau_Free" data-key="alpha111" value="{{ config_data.get('Landau_Free', {}).get('alpha111', 2.6e9) }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="lf-alpha112">alpha112 <span class="unit">(J·m/C²)</span></label>
+                        <input type="number" step="any" id="lf-alpha112" data-cat="Landau_Free" data-key="alpha112" value="{{ config_data.get('Landau_Free', {}).get('alpha112', 6.1e8) }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="lf-alpha123">alpha123 <span class="unit">(J·m/C²)</span></label>
+                        <input type="number" step="any" id="lf-alpha123" data-cat="Landau_Free" data-key="alpha123" value="{{ config_data.get('Landau_Free', {}).get('alpha123', -3.7e9) }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="lf-temp">Temperature <span class="unit">(K)</span></label>
+                        <input type="number" step="any" id="lf-temp" data-cat="Landau_Free" data-key="Temperature" value="{{ config_data.get('Landau_Free', {}).get('Temperature', 298.15) }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="lf-curie-temp">Curie_Temperature <span class="unit">(K)</span></label>
+                        <input type="number" step="any" id="lf-curie-temp" data-cat="Landau_Free" data-key="Curie_Temperature" value="{{ config_data.get('Landau_Free', {}).get('Curie_Temperature', 652.0) }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="lf-curie-const">Curie_Constant</label>
+                        <input type="number" step="any" id="lf-curie-const" data-cat="Landau_Free" data-key="Curie_Constant" value="{{ config_data.get('Landau_Free', {}).get('Curie_Constant', 1.5e5) }}">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Electrostatics -->
+            <div class="tab-panel" id="panel-electrostatic">
+                <h2>Electrostatic Parameters</h2>
+                <p class="subtitle">Set dielectric permittivity constants and potential boundary conditions.</p>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="el-vac">vacuum_permittivity <span class="unit">(F/m)</span></label>
+                        <input type="number" step="any" id="el-vac" data-cat="Electrostatic" data-key="vacuum_permittivity" value="{{ config_data.get('Electrostatic', {}).get('vacuum_permittivity', 8.854e-12) }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="el-xx">relative_permittivity_xx</label>
+                        <input type="number" step="any" id="el-xx" data-cat="Electrostatic" data-key="relative_permittivity_xx" value="{{ config_data.get('Electrostatic', {}).get('relative_permittivity_xx', 100.0) }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="el-yy">relative_permittivity_yy</label>
+                        <input type="number" step="any" id="el-yy" data-cat="Electrostatic" data-key="relative_permittivity_yy" value="{{ config_data.get('Electrostatic', {}).get('relative_permittivity_yy', 100.0) }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="el-zz">relative_permittivity_zz</label>
+                        <input type="number" step="any" id="el-zz" data-cat="Electrostatic" data-key="relative_permittivity_zz" value="{{ config_data.get('Electrostatic', {}).get('relative_permittivity_zz', 130.0) }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="el-bc-top">boundary_condition_top <span class="unit">(0=short, 1=open)</span></label>
+                        <input type="number" id="el-bc-top" data-cat="Electrostatic" data-key="boundary_condition_top" value="{{ config_data.get('Electrostatic', {}).get('boundary_condition_top', 0) }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="el-bc-bot">boundary_condition_bottom <span class="unit">(0=short, 1=open)</span></label>
+                        <input type="number" id="el-bc-bot" data-cat="Electrostatic" data-key="boundary_condition_bottom" value="{{ config_data.get('Electrostatic', {}).get('boundary_condition_bottom', 0) }}">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Ferro Geometry -->
+            <div class="tab-panel" id="panel-geometry">
+                <h2>Ferroelectric Domain Geometry</h2>
+                <p class="subtitle">Specify 3D computational domain grid size and spatial discretization.</p>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="fg-nx">Nx <span class="unit">(Grid Points)</span></label>
+                        <input type="number" id="fg-nx" data-cat="Ferro_Geometry" data-key="Nx" value="{{ config_data.get('Ferro_Geometry', {}).get('Nx', 64) }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="fg-ny">Ny <span class="unit">(Grid Points)</span></label>
+                        <input type="number" id="fg-ny" data-cat="Ferro_Geometry" data-key="Ny" value="{{ config_data.get('Ferro_Geometry', {}).get('Ny', 64) }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="fg-nz">Nz <span class="unit">(Grid Points)</span></label>
+                        <input type="number" id="fg-nz" data-cat="Ferro_Geometry" data-key="Nz" value="{{ config_data.get('Ferro_Geometry', {}).get('Nz', 32) }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="fg-dx">dx <span class="unit">(nm)</span></label>
+                        <input type="number" step="any" id="fg-dx" data-cat="Ferro_Geometry" data-key="dx" value="{{ config_data.get('Ferro_Geometry', {}).get('dx', 1.0) }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="fg-dy">dy <span class="unit">(nm)</span></label>
+                        <input type="number" step="any" id="fg-dy" data-cat="Ferro_Geometry" data-key="dy" value="{{ config_data.get('Ferro_Geometry', {}).get('dy', 1.0) }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="fg-dz">dz <span class="unit">(nm)</span></label>
+                        <input type="number" step="any" id="fg-dz" data-cat="Ferro_Geometry" data-key="dz" value="{{ config_data.get('Ferro_Geometry', {}).get('dz', 1.0) }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="fg-strain-xx">substrate_misfit_strain_xx</label>
+                        <input type="number" step="any" id="fg-strain-xx" data-cat="Ferro_Geometry" data-key="substrate_misfit_strain_xx" value="{{ config_data.get('Ferro_Geometry', {}).get('substrate_misfit_strain_xx', -0.005) }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="fg-strain-yy">substrate_misfit_strain_yy</label>
+                        <input type="number" step="any" id="fg-strain-yy" data-cat="Ferro_Geometry" data-key="substrate_misfit_strain_yy" value="{{ config_data.get('Ferro_Geometry', {}).get('substrate_misfit_strain_yy', -0.005) }}">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Gradient Field -->
+            <div class="tab-panel" id="panel-gradient">
+                <h2>Gradient Energy Coefficients</h2>
+                <p class="subtitle">Set interfacial domain wall energy coefficients.</p>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="gf-g11">G11 <span class="unit">(J·m³/C²)</span></label>
+                        <input type="number" step="any" id="gf-g11" data-cat="Gradient_Field" data-key="G11" value="{{ config_data.get('Gradient_Field', {}).get('G11', 2.0e-10) }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="gf-g12">G12 <span class="unit">(J·m³/C²)</span></label>
+                        <input type="number" step="any" id="gf-g12" data-cat="Gradient_Field" data-key="G12" value="{{ config_data.get('Gradient_Field', {}).get('G12', 0.0) }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="gf-g44">G44 <span class="unit">(J·m³/C²)</span></label>
+                        <input type="number" step="any" id="gf-g44" data-cat="Gradient_Field" data-key="G44" value="{{ config_data.get('Gradient_Field', {}).get('G44', 1.0e-10) }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="gf-g44p">G44_prime <span class="unit">(J·m³/C²)</span></label>
+                        <input type="number" step="any" id="gf-g44p" data-cat="Gradient_Field" data-key="G44_prime" value="{{ config_data.get('Gradient_Field', {}).get('G44_prime', 1.0e-10) }}">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. Initial Polarization -->
+            <div class="tab-panel" id="panel-polarization">
+                <h2>Initial Polarization Configuration</h2>
+                <p class="subtitle">Set initial dipole orientation state and seed mode.</p>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="ip-mode">initialization_mode</label>
+                        <select id="ip-mode" data-cat="Initial_Polarization" data-key="initialization_mode">
+                            <option value="random_noise" {% if config_data.get('Initial_Polarization', {}).get('initialization_mode') == 'random_noise' %}selected{% endif %}>Random Noise</option>
+                            <option value="single_domain" {% if config_data.get('Initial_Polarization', {}).get('initialization_mode') == 'single_domain' %}selected{% endif %}>Single Domain</option>
+                            <option value="vortex" {% if config_data.get('Initial_Polarization', {}).get('initialization_mode') == 'vortex' %}selected{% endif %}>Vortex Seed</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="ip-spont">spontaneous_polarization <span class="unit">(C/m²)</span></label>
+                        <input type="number" step="any" id="ip-spont" data-cat="Initial_Polarization" data-key="spontaneous_polarization" value="{{ config_data.get('Initial_Polarization', {}).get('spontaneous_polarization', 0.75) }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="ip-noise">noise_amplitude</label>
+                        <input type="number" step="any" id="ip-noise" data-cat="Initial_Polarization" data-key="noise_amplitude" value="{{ config_data.get('Initial_Polarization', {}).get('noise_amplitude', 0.05) }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="ip-px">initial_Px <span class="unit">(C/m²)</span></label>
+                        <input type="number" step="any" id="ip-px" data-cat="Initial_Polarization" data-key="initial_Px" value="{{ config_data.get('Initial_Polarization', {}).get('initial_Px', 0.0) }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="ip-py">initial_Py <span class="unit">(C/m²)</span></label>
+                        <input type="number" step="any" id="ip-py" data-cat="Initial_Polarization" data-key="initial_Py" value="{{ config_data.get('Initial_Polarization', {}).get('initial_Py', 0.0) }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="ip-pz">initial_Pz <span class="unit">(C/m²)</span></label>
+                        <input type="number" step="any" id="ip-pz" data-cat="Initial_Polarization" data-key="initial_Pz" value="{{ config_data.get('Initial_Polarization', {}).get('initial_Pz', 0.75) }}">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. External Field -->
+            <div class="tab-panel" id="panel-external">
+                <h2>External Electric Field</h2>
+                <p class="subtitle">Define applied electric field components and time wave profiles.</p>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="ef-ex">Ex <span class="unit">(kV/cm)</span></label>
+                        <input type="number" step="any" id="ef-ex" data-cat="External_Field" data-key="Ex" value="{{ config_data.get('External_Field', {}).get('Ex', 0.0) }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="ef-ey">Ey <span class="unit">(kV/cm)</span></label>
+                        <input type="number" step="any" id="ef-ey" data-cat="External_Field" data-key="Ey" value="{{ config_data.get('External_Field', {}).get('Ey', 0.0) }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="ef-ez">Ez <span class="unit">(kV/cm)</span></label>
+                        <input type="number" step="any" id="ef-ez" data-cat="External_Field" data-key="Ez" value="{{ config_data.get('External_Field', {}).get('Ez', 100.0) }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="ef-waveform">waveform_type</label>
+                        <select id="ef-waveform" data-cat="External_Field" data-key="waveform_type">
+                            <option value="DC" {% if config_data.get('External_Field', {}).get('waveform_type') == 'DC' %}selected{% endif %}>DC Field</option>
+                            <option value="AC_sine" {% if config_data.get('External_Field', {}).get('waveform_type') == 'AC_sine' %}selected{% endif %}>AC Sine Wave</option>
+                            <option value="pulse" {% if config_data.get('External_Field', {}).get('waveform_type') == 'pulse' %}selected{% endif %}>Pulse Waveform</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="ef-freq">frequency_hz <span class="unit">(Hz)</span></label>
+                        <input type="number" step="any" id="ef-freq" data-cat="External_Field" data-key="frequency_hz" value="{{ config_data.get('External_Field', {}).get('frequency_hz', 1000.0) }}">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7. Interactive Visualizer -->
+            <div class="tab-panel" id="panel-visualizer">
+                <h2>Interactive Visualization Engine</h2>
+                <p class="subtitle">Live mathematical plot preview of initial polarization state & Landau double-well energy curve.</p>
+                <div class="visualizer-grid">
+                    <div class="viz-card">
+                        <h3>2D Polarization Vector Grid (Px, Py)</h3>
+                        <canvas id="vector-canvas" width="360" height="300"></canvas>
+                    </div>
+                    <div class="viz-card">
+                        <h3>Landau Free Energy Curve f(P)</h3>
+                        <canvas id="energy-canvas" width="360" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 8. Raw .dat Preview -->
+            <div class="tab-panel" id="panel-raw">
+                <h2>Formatted Raw .dat Dataset Preview</h2>
+                <p class="subtitle">Inspect output text formatting before saving to disk.</p>
+                <div class="raw-preview-container">
+                    <textarea id="raw-preview-text" readonly rows="20" class="raw-code-box"></textarea>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="theme-toggle-container">
+        <button id="theme-toggle" class="theme-toggle-button">🌙</button>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/visualizer.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Theme toggle logic
+            const themeToggle = document.getElementById('theme-toggle');
+            const isDarkMode = localStorage.getItem('darkMode') === 'enabled';
+            if (isDarkMode) {
+                document.body.classList.add('dark-mode');
+                themeToggle.textContent = '☀️';
+            }
+            themeToggle.addEventListener('click', function() {
+                document.body.classList.toggle('dark-mode');
+                const isDark = document.body.classList.contains('dark-mode');
+                themeToggle.textContent = isDark ? '☀️' : '🌙';
+                localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
+                if (window.renderVisualizer) window.renderVisualizer();
+            });
+
+            // Workspace tabs navigation
+            const tabs = document.querySelectorAll('#workspace-tabs .tab-item');
+            const panels = document.querySelectorAll('.tab-panel');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    panels.forEach(p => p.classList.remove('active'));
+
+                    this.classList.add('active');
+                    const targetId = `panel-${this.getAttribute('data-tab')}`;
+                    const targetPanel = document.getElementById(targetId);
+                    if (targetPanel) targetPanel.classList.add('active');
+
+                    if (this.getAttribute('data-tab') === 'raw') updateRawPreview();
+                    if (this.getAttribute('data-tab') === 'visualizer' && window.renderVisualizer) {
+                        window.renderVisualizer();
+                    }
+                });
+            });
+
+            // Gather parameters helper
+            window.collectParameters = function() {
+                const config = {};
+                const inputs = document.querySelectorAll('[data-cat][data-key]');
+                inputs.forEach(input => {
+                    const cat = input.getAttribute('data-cat');
+                    const key = input.getAttribute('data-key');
+                    if (!config[cat]) config[cat] = {};
+
+                    let val = input.value;
+                    if (input.type === 'number') {
+                        val = parseFloat(val);
+                        if (isNaN(val)) val = 0;
+                    }
+                    config[cat][key] = val;
+                });
+                return config;
+            };
+
+            function updateRawPreview() {
+                const config = window.collectParameters();
+                let output = '';
+                for (let cat in config) {
+                    output += `# ==========================================\n`;
+                    output += `# ${cat}.dat Simulation Parameters\n`;
+                    output += `# ==========================================\n`;
+                    for (let key in config[cat]) {
+                        output += `${key} = ${config[cat][key]}\n`;
+                    }
+                    output += `\n`;
+                }
+                document.getElementById('raw-preview-text').value = output;
+            }
+
+            // Toast message helper
+            function showToast(message, isSuccess = true) {
+                const container = document.getElementById('toast-container');
+                const toast = document.createElement('div');
+                toast.className = `toast ${isSuccess ? 'toast-success' : 'toast-error'}`;
+                toast.textContent = message;
+                container.appendChild(toast);
+                setTimeout(() => {
+                    toast.classList.add('fade-out');
+                    setTimeout(() => toast.remove(), 400);
+                }, 3000);
+            }
+
+            // Save Configs handler
+            document.getElementById('save-btn').addEventListener('click', function() {
+                const projectPath = document.getElementById('active-path').textContent.trim();
+                const configData = window.collectParameters();
+
+                fetch('/api/config/save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ project_path: projectPath, config_data: configData })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        showToast('✅ Parameters saved to .dat files!');
+                        const banner = document.getElementById('validation-banner');
+                        const vText = document.getElementById('validation-text');
+                        const vIcon = document.getElementById('validation-icon');
+                        if (data.validation && !data.validation.valid) {
+                            banner.className = 'validation-banner validation-invalid';
+                            vIcon.textContent = '⚠️';
+                            vText.textContent = `Validation Errors: ${data.validation.errors.join('; ')}`;
+                        } else {
+                            banner.className = 'validation-banner validation-valid';
+                            vIcon.textContent = '✅';
+                            vText.textContent = 'All physical parameters are valid and ready for simulation.';
+                        }
+                    } else {
+                        showToast(`❌ Error: ${data.message}`, false);
+                    }
+                })
+                .catch(err => showToast(`❌ Request failed: ${err}`, false));
+            });
+        });
+    </script>
+</body>
+</html>
