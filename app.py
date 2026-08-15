@@ -35,5 +35,20 @@ def open_project_submit():
     return redirect(url_for('workspace', path=folder))
 
 
+@app.route('/workspace')
+def workspace():
+    project_path = request.args.get('path', '').strip()
+    if not project_path:
+        project_path = os.path.join(os.getcwd(), 'default_project')
+    config_data = ConfigEngine.load_project_workspace(project_path)
+    validation = ConfigEngine.validate_parameters(config_data)
+    return render_template(
+        'workspace.html',
+        project_path=project_path,
+        config_data=config_data,
+        validation=validation
+    )
+
 if __name__ == '__main__':
+
     app.run(debug=True, port=8080)
