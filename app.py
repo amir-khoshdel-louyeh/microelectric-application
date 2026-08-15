@@ -76,7 +76,38 @@ def save_config():
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
+@app.route('/api/validate', methods=['POST'])
+def validate_route():
+    data = request.json or {}
+    config_data = data.get('config_data', {})
+    validation = ConfigEngine.validate_parameters(config_data)
+    return jsonify(validation)
+
+@app.route('/api/export', methods=['GET'])
+def export_workspace():
+    project_path = request.args.get('path', '').strip()
+    if not project_path or not os.path.exists(project_path):
+        return jsonify({'status': 'error', 'message': 'Invalid project path'}), 400
+
+    memory_file = io.BytesIO()
+    with zipfile.ZipFile(memory_file, 'w', zipfile.ZIP_DEFLATED) as zf:
+        for root, _, files in os.walk(project_path):
+            for file in files:
+                if file.endswith('.dat'):
+                    full_path = os.path.join(root, file)
+                    rel_path = os.path.relpath(full_path, project_path)
+                    zf.write(full_path, rel_path)
+    memory_file.seek(0)
+    folder_name = os.path.basename(os.path.normpath(project_path)) or 'simulation_config'
+    return send_file(
+        memory_file,
+        mimetype='application/zip',
+        as_attachment=True,
+        download_name=f'{folder_name}_config.zip'
+    )
+
 if __name__ == '__main__':
+
 
 
     app.run(debug=True, port=8080)
