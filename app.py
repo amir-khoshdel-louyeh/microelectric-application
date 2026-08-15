@@ -49,6 +49,34 @@ def workspace():
         validation=validation
     )
 
+@app.route('/api/config/save', methods=['POST'])
+def save_config():
+    data = request.json or {}
+    project_path = data.get('project_path', '').strip()
+    config_data = data.get('config_data', {})
+
+    if not project_path:
+        return jsonify({'status': 'error', 'message': 'Missing project_path'}), 400
+
+    try:
+        os.makedirs(project_path, exist_ok=True)
+        for category, params in config_data.items():
+            file_name = f"{category}.dat"
+            file_path = os.path.join(project_path, file_name)
+            ConfigEngine.write_dat_file(file_path, params, header_comment=f"{category} Simulation Parameters")
+
+        updated_config = ConfigEngine.load_project_workspace(project_path)
+        validation = ConfigEngine.validate_parameters(updated_config)
+
+        return jsonify({
+            'status': 'success',
+            'message': 'Configuration parameters saved successfully!',
+            'validation': validation
+        })
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
 if __name__ == '__main__':
+
 
     app.run(debug=True, port=8080)
