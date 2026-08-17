@@ -67,6 +67,12 @@ GUI Setup Form → Parameter Parsing → Validation & Config Formatting → Dist
 
 ![Main Page](assets/main_page.png)
 
+### Landau Free Energy Configuration
+
+*(Bulk free energy expansion parameters and temperature coefficient setup)*
+
+![Landau Free Energy](assets/landau_Free_energy.png)
+
 ### Generated Configuration Output
 
 ```text
