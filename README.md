@@ -254,16 +254,12 @@ microelectric-application/
 
 ### Running the Application
 
-#### Option 1: Local Development Server (Recommended)
+#### Option 1: Flask Application Server (Recommended)
 
 ```bash
-python -m http.server 8080
+python app.py
 ```
-Then open `http://localhost:8080/static/index.html` in your browser.
-
-#### Option 2: Direct Browser Access
-
-Open `static/index.html` directly in any standard browser.
+Then open `http://localhost:8080/` (or `http://127.0.0.1:8080/`) in your browser.
 
 ---
 
@@ -274,7 +270,7 @@ Open `static/index.html` directly in any standard browser.
 Launch local application verification:
 
 ```bash
-python -m http.server 8080
+python app.py
 ```
 
 ### Standalone Executable Build Test
