@@ -65,15 +65,7 @@ GUI Setup Form → Parameter Parsing → Validation & Config Formatting → Dist
 
 *(Launch interface to select between starting a new simulation project or opening an existing workspace)*
 
-```text
-+-------------------------------------------------------+
-|                    Please Choose:                     |
-|                                                       |
-|   [ New Project ]           [ Open Project ]          |
-|                                                       |
-|                                                  🌙   |
-+-------------------------------------------------------+
-```
+![Main Page](assets/main_page.png)
 
 ### Generated Configuration Output
 
