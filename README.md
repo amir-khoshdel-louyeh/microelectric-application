@@ -85,6 +85,12 @@ GUI Setup Form → Parameter Parsing → Validation & Config Formatting → Dist
 
 ![Ferro Geometry](assets/ferro_geometry.png)
 
+### Gradient Field Coefficients
+
+*(Domain wall energy gradient coefficients and interfacial energy parameters)*
+
+![Gradient Field](assets/gradient_field.png)
+
 ### Generated Configuration Output
 
 ```text
