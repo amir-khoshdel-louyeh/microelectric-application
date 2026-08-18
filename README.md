@@ -79,6 +79,12 @@ GUI Setup Form → Parameter Parsing → Validation & Config Formatting → Dist
 
 ![Electrostatics](assets/electrostatics.png)
 
+### Ferroelectric Geometry Configuration
+
+*(Computational domain size, 3D grid dimensions, and spatial discretization steps)*
+
+![Ferro Geometry](assets/ferro_geometry.png)
+
 ### Generated Configuration Output
 
 ```text
