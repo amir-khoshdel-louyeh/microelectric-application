@@ -73,6 +73,12 @@ GUI Setup Form → Parameter Parsing → Validation & Config Formatting → Dist
 
 ![Landau Free Energy](assets/landau_Free_energy.png)
 
+### Electrostatics Configuration
+
+*(Vacuum permittivity and anisotropic relative permittivity tensor parameters)*
+
+![Electrostatics](assets/electrostatics.png)
+
 ### Generated Configuration Output
 
 ```text
