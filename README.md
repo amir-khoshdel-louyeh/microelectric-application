@@ -97,6 +97,12 @@ GUI Setup Form → Parameter Parsing → Validation & Config Formatting → Dist
 
 ![Initial Polarization](assets/initial_polarization.png)
 
+### External Electric Field
+
+*(Applied external electric field vector components and AC frequency settings)*
+
+![External Field](assets/external_field.png)
+
 ### Generated Configuration Output
 
 ```text
