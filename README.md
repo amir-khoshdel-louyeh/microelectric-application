@@ -91,6 +91,12 @@ GUI Setup Form → Parameter Parsing → Validation & Config Formatting → Dist
 
 ![Gradient Field](assets/gradient_field.png)
 
+### Initial Polarization State
+
+*(Initial dipole initialization mode, noise magnitude, and uniform orientation parameters)*
+
+![Initial Polarization](assets/initial_polarization.png)
+
 ### Generated Configuration Output
 
 ```text
