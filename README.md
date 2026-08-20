@@ -109,6 +109,12 @@ GUI Setup Form → Parameter Parsing → Validation & Config Formatting → Dist
 
 ![Interactive Visualizer](assets/interactive_visualizer.png)
 
+### Raw Configuration File Preview
+
+*(Live preview and raw text inspection of generated simulation .dat files)*
+
+![Data Preview](assets/data_preview.png)
+
 ### Generated Configuration Output
 
 ```text
