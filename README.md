@@ -103,6 +103,12 @@ GUI Setup Form → Parameter Parsing → Validation & Config Formatting → Dist
 
 ![External Field](assets/external_field.png)
 
+### Interactive Visualization Dashboard
+
+*(2D vector grid and real-time Landau free energy potential plot)*
+
+![Interactive Visualizer](assets/interactive_visualizer.png)
+
 ### Generated Configuration Output
 
 ```text
